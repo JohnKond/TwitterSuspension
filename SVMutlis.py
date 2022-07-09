@@ -18,6 +18,9 @@ def svm_finetuning(X_train, y_train, X_test, y_test, svm_dict):
     y_pred = clf.predict(X_test)
     accuracy = metrics.accuracy_score(y_test, y_pred)
 
+    y_pred
+    y_test
+
     svm_dict[param_pairs] += accuracy
     return svm_dict
 
@@ -43,6 +46,9 @@ def svm_run(c, gamma, kernel, X_train, y_train, X_test, y_test):
     clf = svm.SVC(kernel=kernel, C=c, gamma=gamma)
     clf.fit(X_train, y_train)
     y_pred = clf.predict(X_test)
+
+    y_pred
+    y_test
     accuracy = metrics.accuracy_score(y_test, y_pred)
     return accuracy
 

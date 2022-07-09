@@ -4,6 +4,7 @@ import collections
 import pandas as pd
 from sklearn.model_selection import StratifiedKFold
 
+from RFutlis import rf_finetuning
 from featureSelectionUtils import feature_selection
 from SVMutlis import svm_finetuning, svm_best_params, svm_run
 
@@ -45,10 +46,10 @@ X_test = X_test[features]
 
 
 # example dataset
-X_train = X_train.iloc[:100]
-y_train = y_train.iloc[:100]
-X_test = X_test.iloc[:99]
-y_test = y_test.iloc[:99]
+# X_train = X_train.iloc[:100]
+# y_train = y_train.iloc[:100]
+# X_test = X_test.iloc[:99]
+# y_test = y_test.iloc[:99]
 
 
 number_of_folds = 10
@@ -60,7 +61,7 @@ svm_dict = collections.defaultdict(lambda: 0.0)
 for train_index, test_index in kfold.split(X_train, y_train):
     trainX, valX = X_train.iloc[train_index, :], X_train.iloc[test_index, :]
     trainY, valY = y_train[train_index], y_train[test_index]
-    svm_dict = svm_finetuning(X_train, y_train, valX, valY, svm_dict)
+    svm_dict = svm_finetuning(trainX, trainY, valX, valY, svm_dict)
 
 
 # svm_dict = {"[('C', 0.1), ('gamma', 1), ('kernel', 'rbf')]": 8.5}
@@ -70,6 +71,15 @@ c, gamma, kernel = svm_best_params(svm_dict, number_of_folds)
 accuracy = svm_run(c, gamma, kernel, X_train, y_train, X_test, y_test)
 print('SVM accuracy : ', accuracy)
 
+'''
+
+# Random Forest finetuning
+rf_dict = collections.defaultdict(lambda: 0.0)
+for train_index, test_index in kfold.split(X_train, y_train):
+    trainX, valX = X_train.iloc[train_index, :], X_train.iloc[test_index, :]
+    trainY, valY = y_train[train_index], y_train[test_index]
+    rf_dict = rf_finetuning(trainX, trainY, valX, valY, rf_dict)
+'''
 
 print('Training done')
 
