@@ -21,7 +21,7 @@ def Lasso_finetuning(X_train, Y_train, X_test, Y_test, lasso_dict):
     return lasso_dict
 
 
-def select_best_alpha(lasso_dict,number_of_folds):
+def select_best_alpha(lasso_dict, number_of_folds):
     for alpha in lasso_dict:
         lasso_dict[alpha] /= number_of_folds
 
@@ -30,7 +30,7 @@ def select_best_alpha(lasso_dict,number_of_folds):
     return alpha
 
 
-def significant_features(X_train,y_train,alpha):
+def significant_features(X_train, y_train, alpha):
     features = []
     lasso = Lasso(max_iter=10000, alpha=alpha)
     lasso.fit(X_train, y_train)

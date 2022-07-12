@@ -2,10 +2,12 @@ import numpy as np
 from sklearn import svm
 from sklearn import metrics
 from sklearn.model_selection import RandomizedSearchCV
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import StratifiedKFold
+from sklearn.ensemble import RandomForestClassifier
 
 
-def rf_finetuning(X_train, y_train, X_test, y_test, rf_dict):
+def rf_finetuning(X_train, y_train):
+    print('RandomForest finetuning')
     n_estimators = [5, 20, 50, 100]  # number of trees in the random forest
     max_features = ['auto', 'sqrt']  # number of features in consideration at every split
     max_depth = [int(x) for x in np.linspace(10, 120, num=12)]  # maximum number of levels allowed in each decision tree
@@ -14,50 +16,52 @@ def rf_finetuning(X_train, y_train, X_test, y_test, rf_dict):
     bootstrap = [True, False]  # method used to sample data points
 
     param_grid = {'n_estimators': n_estimators,
-                   'max_features': max_features,
-                   'max_depth': max_depth,
-                   'min_samples_split': min_samples_split,
-                   'min_samples_leaf': min_samples_leaf,
-                   'bootstrap': bootstrap}
+                  'max_features': max_features,
+                  'max_depth': max_depth,
+                  'min_samples_split': min_samples_split,
+                  'min_samples_leaf': min_samples_leaf,
+                  'bootstrap': bootstrap}
 
-    rf = RandomForestRegressor()
-    clf = RandomizedSearchCV(estimator=rf, param_distributions=param_grid,
-                                   n_iter=100, cv=5, verbose=2, random_state=35, n_jobs=-1)
+    cv = StratifiedKFold(n_splits=10, shuffle=True)  # 10 folds
+    n_jobs = -1  # all processors to be used
+    scoring = 'f1'  # f1 scoring function
+    rf = RandomForestClassifier()
+
+    clf = RandomizedSearchCV(
+        estimator=rf,
+        param_distributions=param_grid,
+        n_iter=100,
+        cv=cv,
+        verbose=3,
+        scoring=scoring,
+        random_state=35,
+        n_jobs=n_jobs,
+        return_train_score=True)
 
     clf.fit(X_train, y_train)
-    best_params = clf.best_params_
-    param_pairs = str(list(best_params.items())).replace('\'','"')
-    y_pred = clf.predict(X_test)
-
-    y_pred
-    y_test
-    accuracy = metrics.accuracy_score(y_test, y_pred)
-
-    rf_dict[param_pairs] += accuracy
-    return rf_dict
+    results = clf.cv_results_
+    print(clf.best_params_)
+    print(clf.best_score_)
+    return clf.best_params_, clf.best_score_
 
 
-# return best parameters (C, gamma, kernel)
-def rf_best_params(rf_dict, number_of_folds):
-    for params in rf_dict:
-        rf_dict[params] /= number_of_folds
+# run RandomForest classifier with tunes parameters
+def rf_run(params, X_train, y_train):
+    n_estimators = params['n_estimators']
+    max_features = params['max_features']
+    max_depth = params['max_depth']
+    min_samples_split = params['min_samples_split']
+    min_samples_leaf = params['min_samples_leaf']
+    bootstrap = params['bootstrap']
 
-    rf_dict = {k: v for k, v in sorted(rf_dict.items(), key=lambda item: item[1])}
-    best_params = eval(next(iter(rf_dict)))
-
-    # C, C_value = (best_params[0])
-    # gamma, gamma_value = (best_params[1])
-    # kernel, kernel_value = (best_params[2])
-
-    return
-
-
-# run svm with parameters C,gamma, kernel and returns accuracy
-def rf_run(c, gamma, kernel, X_train, y_train, X_test, y_test):
-    # svm classifier
-    clf = svm.SVC(kernel=kernel, C=c, gamma=gamma)
+    # rf classifier
+    clf = RandomForestClassifier(
+        n_estimators=n_estimators,
+        max_features=max_features,
+        max_depth=max_depth,
+        min_samples_split=min_samples_split,
+        min_samples_leaf=min_samples_leaf,
+        bootstrap=bootstrap
+    )
     clf.fit(X_train, y_train)
-    y_pred = clf.predict(X_test)
-    accuracy = metrics.accuracy_score(y_test, y_pred)
-    return accuracy
-
+    return clf

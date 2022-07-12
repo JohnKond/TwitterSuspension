@@ -1,14 +1,14 @@
 #!/usr/bin/env python
-import collections
 
-import pandas as pd
-from sklearn.model_selection import StratifiedKFold
-
-from RFutlis import rf_finetuning
-from featureSelectionUtils import feature_selection
-from SVMutlis import svm_finetuning, svm_best_params, svm_run
 
 import os.path
+import pandas as pd
+
+from featureSelectionUtils import feature_selection
+from SaveLoadUtils import save_model, load_model
+from RFutlis import rf_finetuning, rf_run
+from SVMutlis import svm_finetuning, svm_run
+from XGButils import xgb_finetuning, xgb_run
 
 # read train,val and test from files
 X_train = pd.read_csv('input/train.tsv', sep='\t')
@@ -37,56 +37,69 @@ else:
             # write each item on a new line
             fp.write("%s\n" % item)
 
-
 print('Feature selection.....Done')
 
 # X_train and X_test after feature selection
 X_train = X_train[features]
 X_test = X_test[features]
 
-
 # example dataset
-# X_train = X_train.iloc[:100]
-# y_train = y_train.iloc[:100]
-# X_test = X_test.iloc[:99]
-# y_test = y_test.iloc[:99]
+X_train = X_train.iloc[:100]
+y_train = y_train.iloc[:100]
+X_test = X_test.iloc[:99]
+y_test = y_test.iloc[:99]
 
 
-number_of_folds = 10
-kfold = StratifiedKFold(n_splits=number_of_folds, shuffle=True)
+def svm_model(X_train, y_train):
+    # SVM fine-tuning
+    svm_params, svm_cv_score = svm_finetuning(X_train, y_train)
+
+    # run svm model with tuned parameters
+    model = svm_run(svm_params, X_train, y_train)
+
+    # save model in file
+    save_model('SVM', model)
+    print('Done SVM classifier')
 
 
-# SVM finetuning
-svm_dict = collections.defaultdict(lambda: 0.0)
-for train_index, test_index in kfold.split(X_train, y_train):
-    trainX, valX = X_train.iloc[train_index, :], X_train.iloc[test_index, :]
-    trainY, valY = y_train[train_index], y_train[test_index]
-    svm_dict = svm_finetuning(trainX, trainY, valX, valY, svm_dict)
+def random_forest_model(X_train, y_train):
+    # Random Forest fine-tuning
+    rf_params, rf_cv_score = rf_finetuning(X_train, y_train)
+
+    # run rf model with tuned parameters
+    model = rf_run(rf_params, X_train, y_train)
+
+    # save model in file
+    save_model('RF', model)
+    print('Done RandomForest classifier')
 
 
-# svm_dict = {"[('C', 0.1), ('gamma', 1), ('kernel', 'rbf')]": 8.5}
-c, gamma, kernel = svm_best_params(svm_dict, number_of_folds)
+def xgb_model(X_train, y_train):
+    # XGBoost fine-tuning
+    xgb_params, xgb_cv_score = xgb_finetuning(X_train, y_train)
+    # {'colsample_bytree': 0.8, 'max_depth': 20, 'n_estimators': 700, 'reg_alpha': 1.3, 'reg_lambda': 1.2, 'subsample': 0.9}
 
-# run svm with best parameters and store accuracy
-accuracy = svm_run(c, gamma, kernel, X_train, y_train, X_test, y_test)
-print('SVM accuracy : ', accuracy)
+    # run xgb model with tuned parameters
+    model = xgb_run(xgb_params, X_train, y_train)
+
+    # save model in file
+    save_model('XGB', model)
+    print('Done XGBoost classifier')
+
 
 '''
 
-# Random Forest finetuning
-rf_dict = collections.defaultdict(lambda: 0.0)
-for train_index, test_index in kfold.split(X_train, y_train):
-    trainX, valX = X_train.iloc[train_index, :], X_train.iloc[test_index, :]
-    trainY, valY = y_train[train_index], y_train[test_index]
-    rf_dict = rf_finetuning(trainX, trainY, valX, valY, rf_dict)
+Run models:
+1. SVM
+2. Random-Forest
+3. XGBoost
+
 '''
+
+
+# svm_model(X_train, y_train)
+# random_forest_model(X_train, y_train)
+xgb_model(X_train, y_train)
+
 
 print('Training done')
-
-
-
-
-
-
-
-
