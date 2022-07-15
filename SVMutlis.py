@@ -3,47 +3,35 @@ from sklearn import metrics
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import StratifiedKFold
 from sklearn.svm import SVC
-from utils.global_params import K_folds
+from utils.global_params import K_folds,SVM_params
 import pickle
 
 
 def svm_finetuning(X_train, y_train):
     print('SVM finetuning')
-    # GridSearch parameters
-    param_grid = {'C': [0.1, 1, 10, 100, 1000],
-                  'gamma': ['auto', 1, 0.1, 0.01, 0.001, 0.0001],
-                  'kernel': ['rbf', 'linear']}
-
-    cv = StratifiedKFold(n_splits=K_folds, shuffle=True)      # 10 folds
-    n_jobs = -1      # all processors to be used
-    scoring = 'f1'   # scoring function
 
     clf = GridSearchCV(
         estimator=SVC(),
-        param_grid=param_grid,
-        scoring=scoring,
-        cv=cv,
+        param_grid=SVM_params,
+        scoring='f1',
+        cv=StratifiedKFold(n_splits=K_folds, shuffle=True),
         refit=True,
         verbose=3,
-        n_jobs=n_jobs,
+        n_jobs=-1,
         return_train_score=True)
 
     clf.fit(X_train, y_train)
 
     results = clf.cv_results_
-    print(clf.best_params_)
+    estimator = clf.best_estimator_
+    print(estimator)
     print(clf.best_score_)
-    return clf.best_params_, clf.best_score_
+
+    return clf.best_estimator_, clf.best_score_
 
 
 # run svm with parameters C,gamma, kernel and returns accuracy
-def svm_run(params, X_train, y_train):
-    c = params['C']
-    gamma = params['gamma']
-    kernel = params['kernel']
-
-    # svm classifier
-    clf = svm.SVC(kernel=kernel, C=c, gamma=gamma)
+def svm_run(clf, X_train, y_train):
     clf.fit(X_train, y_train)
     return clf
 
