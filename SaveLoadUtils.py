@@ -2,7 +2,7 @@ import pickle
 
 
 def save_model(type, model):
-    filename = type + '_bot_detection.pkl'
+    filename = 'models/'+type + '_bot_detection.pkl'
     pickle.dump(model, open(filename, 'wb'))
 
 

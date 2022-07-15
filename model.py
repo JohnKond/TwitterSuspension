@@ -98,8 +98,8 @@ Run models:
 
 
 # svm_model(X_train, y_train)
-# random_forest_model(X_train, y_train)
-xgb_model(X_train, y_train)
+random_forest_model(X_train, y_train)
+# xgb_model(X_train, y_train)
 
 
 print('Training done')

@@ -32,12 +32,12 @@ def svm_finetuning(X_train, y_train):
     results = clf.cv_results_
     print(clf.best_params_)
     print(clf.best_score_)
-    return clf.best_params_
+    return clf.best_params_, clf.best_score_
 
 
 # run svm with parameters C,gamma, kernel and returns accuracy
 def svm_run(params, X_train, y_train):
-    c = params['c']
+    c = params['C']
     gamma = params['gamma']
     kernel = params['kernel']
 
@@ -47,7 +47,4 @@ def svm_run(params, X_train, y_train):
     return clf
 
 
-def save_svm(model):
-    filename = 'SVM_bot_detection.pkl'
-    pickle.dump(model, open(filename, 'wb'))
 

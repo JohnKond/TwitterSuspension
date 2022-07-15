@@ -12,9 +12,9 @@ def xgb_finetuning(X_train, y_train):
         use_label_encoder=False
     )
     param_grid = {
-        'n_estimators': [300, 400, 500, 600, 700],
+        'n_estimators': [300, 400, 500],
         'colsample_bytree': [0.65, 0.7, 0.75, 0.8, 0.9],
-        'max_depth': [6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        'max_depth': [6, 7, 8, 9, 10, 11, 12],
         'gamma': [0, 0.25, 0.5, 1.0],
         'reg_alpha': [1.1, 1.2, 1.3],
         'reg_lambda': [0.1, 1, 1.1, 1.2, 1.3],
@@ -52,8 +52,8 @@ def xgb_run(params, X_train, y_train):
     gamma = params['gamma']
 
     clf = xgb.XGBClassifier(
-        predictor='gpu_predictor',
-        tree_method='gpu_hist',
+        # predictor='gpu_predictor',
+        # tree_method='gpu_hist',
         objective='binary:logistic',
         n_estimators=n_estimators,
         colsample_bytree=colsample_bytree,
