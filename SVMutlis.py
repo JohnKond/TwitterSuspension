@@ -3,6 +3,7 @@ from sklearn import metrics
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import StratifiedKFold
 from sklearn.svm import SVC
+from utils.global_params import K_folds
 import pickle
 
 
@@ -13,7 +14,7 @@ def svm_finetuning(X_train, y_train):
                   'gamma': ['auto', 1, 0.1, 0.01, 0.001, 0.0001],
                   'kernel': ['rbf', 'linear']}
 
-    cv = StratifiedKFold(n_splits=10, shuffle=True)      # 10 folds
+    cv = StratifiedKFold(n_splits=K_folds, shuffle=True)      # 10 folds
     n_jobs = -1      # all processors to be used
     scoring = 'f1'   # scoring function
 

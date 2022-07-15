@@ -1,6 +1,7 @@
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import StratifiedKFold
 import xgboost as xgb
+from utils.global_params import K_folds
 
 
 def xgb_finetuning(X_train, y_train):
@@ -8,12 +9,12 @@ def xgb_finetuning(X_train, y_train):
     model = xgb.XGBClassifier(
         # predictor='gpu_predictor',
         # tree_method='gpu_hist',
-        objective='binary:logistic',
+        objective='binary:logistic', # multi:softmax, multi:softprob nclass ???
         use_label_encoder=False
     )
     param_grid = {
-        'n_estimators': [300, 400, 500],
-        'colsample_bytree': [0.65, 0.7, 0.75, 0.8, 0.9],
+        'n_estimators': [300, 400, 500, 1000, 1500, 2000, 2500],
+        'colsample_bytree': [0.65, 0.7, 0.75, 0.8, 0.85, 0.9],
         'max_depth': [6, 7, 8, 9, 10, 11, 12],
         'gamma': [0, 0.25, 0.5, 1.0],
         'reg_alpha': [1.1, 1.2, 1.3],
@@ -22,7 +23,7 @@ def xgb_finetuning(X_train, y_train):
         'learning_rate': [0.005, 0.01, 0.015]
     }
 
-    cv = StratifiedKFold(n_splits=10, shuffle=True)      # 10 folds
+    cv = StratifiedKFold(n_splits=K_folds, shuffle=True)      # 10 folds
     scoring = 'f1'
 
     clf = GridSearchCV(
