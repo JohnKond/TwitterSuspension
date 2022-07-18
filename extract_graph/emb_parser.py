@@ -1,10 +1,11 @@
 import json
 import h5py
-import pandas as pd 
+import pandas as pd
+
 
 class ParseEmbeddings:
     def __init__(self, graph_type, out_dims, first):
-        DATA_DIR = '../../data'
+        DATA_DIR = '../data'
 
         self.graph_type = graph_type
         self.dims = out_dims
@@ -14,8 +15,6 @@ class ParseEmbeddings:
         self.entity_file = "entity_{}_json/entity_names_user_0.json".format(name)
         self.embeddings_file = "model_{}/embeddings_user_0.v500.h5".format(name)
         self.output_file = DATA_DIR + "/graph_embeddings_features{}.csv".format("_second21" if not first else "")
-
-
 
     def store_embeddings(self):
         """Read profile feature file in order to get selected user_ids and do not store data for entire 6M dataset"""

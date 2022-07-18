@@ -6,14 +6,17 @@ Parse the tsv graph relation file and train the PytorchBigGraph model in order t
 ####################################################################################################################"""
 
 import os, sys, argparse
-os.environ['OPENBLAS_NUM_THREADS'] = '1'
+
+# os.environ['OPENBLAS_NUM_THREADS'] = '1'
 
 from pathlib import Path
 from os import path
-from parser import ParseEmbeddings
 
+from emb_parser import ParseEmbeddings
+import json
 
 import torch.multiprocessing
+
 torch.multiprocessing.set_sharing_strategy('file_system')
 
 from torchbiggraph.converters.importers import TSVEdgelistReader, convert_input_data
@@ -25,8 +28,9 @@ from torchbiggraph.util import SubprocessInitializer, set_logging_verbosity, set
 class SocialGraphEmbedding:
     def __init__(self, graph_type, out_dimmensions, first):
         self.dims = out_dimmensions
-        self.DATA_DIR = '../../data'
-        self.GRAPH_PATH = self.DATA_DIR + "/graph_{}_{}21.tsv".format(graph_type, "first" if first else "second")
+        self.DATA_DIR = '../data'
+        # self.GRAPH_PATH = self.DATA_DIR + "/graph_{}_{}21.tsv".format(graph_type, "first" if first else "second")
+        self.GRAPH_PATH = self.DATA_DIR + "/graph_example.tsv"
 
         self.name = "{}_{}_{}21".format(graph_type, self.dims, "first" if first else "second")
         self.MODEL_DIR = 'model_{}'.format(self.name)
@@ -39,6 +43,7 @@ class SocialGraphEmbedding:
         self.parser.store_embeddings()
 
     """Generates configuration file in form of pytorchBigGraph"""
+
     def create_config(self):
         return dict(
             # I/O data
@@ -71,7 +76,7 @@ class SocialGraphEmbedding:
             eval_num_batch_negs=10000,
             eval_num_uniform_negs=0,
             # GPU
-            num_gpus=1,
+            # num_gpus=1,
         )
 
     def main(self):
@@ -98,23 +103,33 @@ class SocialGraphEmbedding:
         train(config, subprocess_init=subprocess_init)
 
 
-parser = argparse.ArgumentParser(description='Parse extracted Graph files(.tsv) into PytorchBigGraph model and generate node embeddings')
-parser.add_argument('--dims', type=int, dest='dims', required=True, help="Number of output embedding dimensions. (Required!)")
-parser.add_argument('--second_portion', dest='second_weeks', default=False, action='store_true', help="Flag parameter describe if should be used for second 21 days data extraction")
-parser.add_argument('--multy', dest='multy', default=False, action='store_true', help="Flag that describe graph relation that would be utilized (Multy)")
-parser.add_argument('--quote', dest='quote', default=False, action='store_true', help="Flag that describe graph relation that would be utilized (Quote)")
-parser.add_argument('--mention', dest='mention', default=False, action='store_true', help="Flag that describe graph relation that would be utilized (Mention)")
-parser.add_argument('--retweet', dest='retweet', default=False, action='store_true', help="Flag that describe graph relation that would be utilized (Retweet)")
-
+parser = argparse.ArgumentParser(
+    description='Parse extracted Graph files(.tsv) into PytorchBigGraph model and generate node embeddings')
+parser.add_argument('--dims', type=int, dest='dims', required=True,
+                    help="Number of output embedding dimensions. (Required!)")
+parser.add_argument('--second_portion', dest='second_weeks', default=False, action='store_true',
+                    help="Flag parameter describe if should be used for second 21 days data extraction")
+parser.add_argument('--multy', dest='multy', default=False, action='store_true',
+                    help="Flag that describe graph relation that would be utilized (Multy)")
+parser.add_argument('--quote', dest='quote', default=False, action='store_true',
+                    help="Flag that describe graph relation that would be utilized (Quote)")
+parser.add_argument('--mention', dest='mention', default=False, action='store_true',
+                    help="Flag that describe graph relation that would be utilized (Mention)")
+parser.add_argument('--retweet', dest='retweet', default=False, action='store_true',
+                    help="Flag that describe graph relation that would be utilized (Retweet)")
 
 args = parser.parse_args()
 
 if __name__ == "__main__":
     graph_type = ""
-    if args.multy: graph_type = "multy"
-    elif args.quote: graph_type = "quote"
-    elif args.mention: graph_type = "mention"
-    elif args.retweet: graph_type = "retweet"
+    if args.multy:
+        graph_type = "multy"
+    elif args.quote:
+        graph_type = "quote"
+    elif args.mention:
+        graph_type = "mention"
+    elif args.retweet:
+        graph_type = "retweet"
     if graph_type == "":
         print("Select the graph relation (--multy or --retweet or --quote or --mention).")
         sys.exit(-1)

@@ -52,10 +52,10 @@ y_test = y_test.iloc[:99]
 
 def svm_model(X_train, y_train):
     # SVM fine-tuning
-    svm_params, svm_cv_score = svm_finetuning(X_train, y_train)
+    svm_clf, svm_cv_score = svm_finetuning(X_train, y_train)
 
     # run svm model with tuned parameters
-    model = svm_run(svm_params, X_train, y_train)
+    model = svm_run(svm_clf, X_train, y_train)
 
     # save model in file
     save_model('SVM', model)
@@ -64,10 +64,10 @@ def svm_model(X_train, y_train):
 
 def random_forest_model(X_train, y_train):
     # Random Forest fine-tuning
-    rf_params, rf_cv_score = rf_finetuning(X_train, y_train)
+    rf_clf, rf_cv_score = rf_finetuning(X_train, y_train)
 
     # run rf model with tuned parameters
-    model = rf_run(rf_params, X_train, y_train)
+    model = rf_run(rf_clf, X_train, y_train)
 
     # save model in file
     save_model('RF', model)
@@ -76,11 +76,10 @@ def random_forest_model(X_train, y_train):
 
 def xgb_model(X_train, y_train):
     # XGBoost fine-tuning
-    xgb_params, xgb_cv_score = xgb_finetuning(X_train, y_train)
-    # {'colsample_bytree': 0.8, 'max_depth': 20, 'n_estimators': 700, 'reg_alpha': 1.3, 'reg_lambda': 1.2, 'subsample': 0.9}
+    xgb_clf, xgb_cv_score = xgb_finetuning(X_train, y_train)
 
     # run xgb model with tuned parameters
-    model = xgb_run(xgb_params, X_train, y_train)
+    model = xgb_run(xgb_clf, X_train, y_train)
 
     # save model in file
     save_model('XGB', model)
