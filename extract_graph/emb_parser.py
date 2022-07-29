@@ -4,16 +4,18 @@ import pandas as pd
 
 
 class ParseEmbeddings:
-    def __init__(self, graph_type, out_dims, first):
+    def __init__(self, graph_type, out_dims, graph_period, first):
         DATA_DIR = '../data'
 
         self.graph_type = graph_type
         self.dims = out_dims
+        self.graph_period = graph_period
         self.first = first
-        name = "{}_{}_{}21".format(graph_type, out_dims, "first" if first else "second")
+        name = "{}_{}_{}".format(graph_type, out_dims, graph_period)
         self.dataset_file = DATA_DIR + "/profile_features{}.csv".format("_second21" if not first else "")
         self.entity_file = "entity_{}_json/entity_names_user_0.json".format(name)
-        self.embeddings_file = "model_{}/embeddings_user_0.v500.h5".format(name)
+        self.entity_count_file = "entity_{}_json/entity_count_user_0.txt".format(name)
+        self.embeddings_file = "checkpoint_{}_json/embeddings_user_0.v50.h5".format(name)
         self.output_file = DATA_DIR + "/graph_embeddings_features{}.csv".format("_second21" if not first else "")
 
     def store_embeddings(self):
