@@ -1,6 +1,8 @@
 import json
 import h5py
 import faiss
+import numpy as np
+
 
 class NeighboursEmbeddings:
 
@@ -76,12 +78,12 @@ class NeighboursEmbeddings:
         return embeddingsDict[node]
 
     def newVectorSpace(self, neighbours):
-        embed_arr = []
-        embed_arr = [[1,2,3,4],[3,4,5,6],[1,4,2,4]]
-        # for neigh in neighbours:
-        #     embed_arr.append(self.getEmbeddings(neigh))
-
-        return None
+        arr = []
+        for neigh in neighbours:
+            arr.append(self.getEmbeddings(neigh))
+        embed_arr = np.array(arr)
+        new_vector_space = np.mean(embed_arr, axis=0)
+        return new_vector_space
 
 
     def placeNewNodes(self):
