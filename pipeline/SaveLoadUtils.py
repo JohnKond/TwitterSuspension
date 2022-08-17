@@ -2,8 +2,7 @@ import pickle
 import json
 import os, os.path
 
-
-path = '/home/gkont/TwitterSuspension/'
+path = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + '/'
 
 
 def save_params(Mtype, params):

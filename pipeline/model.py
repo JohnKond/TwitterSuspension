@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import os
 import os.path
 import pandas as pd
 import time
@@ -8,10 +9,11 @@ from SaveLoadUtils import save_params, load_params, save_scores
 from train_model import TrainModel
 
 
+# change train_input_folder to your folder path that contains train.tsv and test.tsv
 period = 'feb_mar'
 train_input_folder = '/Storage/gkont/model_input/{}/'.format(period)
-path = '/home/gkont/TwitterSuspension/'
 
+path = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + '/'
 
 '''
     Read input files train.tsv and test.tsv. For this step first
@@ -37,7 +39,7 @@ def read_input():
     implemented, load the features and return the datasets.
 '''
 def feature_selection(X_train, y_train, X_test, y_test):
-
+    print('Path : ', path)
     # if feature selection is implemented import features
     if os.path.exists(path + 'FSfeatures/features.txt'):
         with open(path + '/FSfeatures/features.txt') as f:

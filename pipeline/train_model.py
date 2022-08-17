@@ -22,7 +22,7 @@ from SaveLoadUtils import save_params, save_scores
 # from cuml import RandomForestClassifier as cuRF
 #from thundersvm import SVC
 
-path_to_project = "/home/gkont/TwitterSuspension"
+#path_to_project = "/home/gkont/TwitterSuspension"
 
 class TrainModel:
     def __init__(self, period, X_train, y_train, k_folds):
@@ -174,6 +174,7 @@ class TrainModel:
         best_val_score = performance_val_dict[best_params]/self.k_folds
         best_train_score = performance_train_dict[best_params]/self.k_folds
 
+        print('Training time : ',training_time)
         print('Best params are : ',best_params) 
         print('Best val score is : ', best_val_score)
         print('Best train score is : ', best_train_score)
@@ -188,8 +189,8 @@ class TrainModel:
         return best_param_set
 
     def models_finetuning(self):
-        self.finetune('SVM')
         self.finetune('RF')
+        self.finetune('SVM')
         self.finetune('XGB')
 
     def create_folds(self):
