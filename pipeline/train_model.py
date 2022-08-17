@@ -4,7 +4,7 @@ import time
 from collections import defaultdict
 import sys
 import pickle
-
+import os.path
 #sys.path.append("/home/gkont/TwitterSuspension")
 
 import numpy as np
@@ -22,7 +22,7 @@ from SaveLoadUtils import save_params, save_scores
 # from cuml import RandomForestClassifier as cuRF
 #from thundersvm import SVC
 
-
+path_to_project = "/home/gkont/TwitterSuspension"
 
 class TrainModel:
     def __init__(self, period, X_train, y_train, k_folds):
@@ -42,7 +42,6 @@ class TrainModel:
                           kernel=entry['kernel'],
                           C=float(entry['C']),
                           gamma=float(entry['gamma']),
-                          n_jobs=-1,
                           verbose=0)
         elif name == 'RF':
             if entry['bootstrap'] == 'True':
@@ -189,26 +188,18 @@ class TrainModel:
         return best_param_set
 
     def models_finetuning(self):
-        #self.finetune('XGB')
+        self.finetune('SVM')
         self.finetune('RF')
-        #self.finetune('SVM')
+        self.finetune('XGB')
 
     def create_folds(self):
         # check if folds indexes exists
+        if os.path.exists('fold_indexes.pkl'):
+            print('Importing folds from file..')
+            with open('fold_indexes.pkl', "rb") as output:
+                self.folds_dict = pickle.load(output)
+            return
         
-        #with open("folds_indexes.json") as f:
-            #data = f.read()
-
-        #data = data.replace("'","\"")
-        #print(data)
-        #self.folds_dict = ast.literal_eval(str(data))
-        #self.folds_dict = json.loads(data)
-        #f.close()
-
-        with open('fold_indexes.pkl', "rb") as output:
-            self.folds_dict = pickle.load(output)
-        return
-        '''
         k_folds = StratifiedKFold(n_splits=self.k_folds, shuffle=True)
         i = 1
         for train_index, val_index in k_folds.split(self.X_train, self.y_train):
@@ -216,14 +207,11 @@ class TrainModel:
             i = i+1
 
         # store folds indexes in file
-        #f = open("folds_indexes.json","w+")
         with open('fold_indexes.pkl', "wb") as output:
             pickle.dump(self.folds_dict, output)
 
-        #f.write(str(self.folds_dict))
-        #f.close()
         print(str(self.k_folds) + ' folds created..\n')
-        '''
+        
 
     def main(self):
         self.create_folds()
