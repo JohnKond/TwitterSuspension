@@ -1,7 +1,5 @@
 import numpy as np
 
-K_folds = 10
-
 """Fine-tune parameters for SVM model"""
 SVM_params = {
     'C': [0.1, 1, 10, 100, 200, 300, 500],

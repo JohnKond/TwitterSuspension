@@ -86,8 +86,7 @@ def main():
     X_train, y_train, X_test, y_test = feature_selection(X_train, y_train, X_test, y_test)
 
     # train models
-    # train_models(X_train, y_train)
-    # TrainModel('feb_mar', X_train, y_train, 5)
+    TrainModel('feb_mar', X_train, y_train,k_folds=5)
 
 
 main()
