@@ -5,9 +5,6 @@ import time
 
 import featureSelectionUtils
 from SaveLoadUtils import save_params, load_params, save_scores
-from RFutlis import rf_finetuning
-from SVMutlis import svm_finetuning
-from XGButils import xgb_finetuning
 from train_model import TrainModel
 
 
@@ -77,72 +74,6 @@ def feature_selection(X_train, y_train, X_test, y_test):
     #y_test = y_test.iloc[:99]
 
     return X_train, y_train, X_test, y_test
-
-
-''' Train SVM model '''
-def svm_model(X_train, y_train):
-
-    # SVM fine-tuning
-    start_train = time.time()
-    svm_best_params, svm_cv_score = svm_finetuning(X_train, y_train)
-    end_train = time.time()
-
-    # compute training time
-    training_time = end_train - start_train
-
-    # save params and stats
-    save_params('SVM', svm_best_params)
-    save_scores('SVM', svm_cv_score, training_time)
-    print('Done SVM classifier')
-
-
-''' Train RandomForest model '''
-def random_forest_model(X_train, y_train):
-
-    start_train = time.time()
-    # Random Forest fine-tuning
-    rf_best_params, rf_cv_score = rf_finetuning(X_train, y_train)
-    end_train = time.time()
-
-    # compute training time
-    training_time = end_train - start_train
-
-    # save model in file
-    save_params('RF', rf_best_params)
-    save_scores('RF', rf_cv_score, training_time)
-    print('Done RandomForest classifier')
-
-
-''' Train xgb_model '''
-def xgb_model(X_train, y_train):
-
-    # XGBoost fine-tuning
-    start_train = time.time()
-    xgb_best_params, xgb_cv_score = xgb_finetuning(X_train, y_train)
-    end_train = time.time()
-
-    # compute training time
-    training_time = end_train - start_train
-
-    # save model in file
-    save_params('XGB', xgb_best_params)
-    save_scores('XGB', xgb_cv_score, training_time)
-    print('Done XGBoost classifier')
-
-
-'''
-
-Run models:
-1. SVM
-2. Random-Forest
-3. XGBoost
-
-'''
-
-def train_models(X_train, y_train):
-    svm_model(X_train, y_train)
-    random_forest_model(X_train, y_train)
-    xgb_model(X_train, y_train)
 
 
 def main():
