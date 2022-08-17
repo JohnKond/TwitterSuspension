@@ -20,7 +20,7 @@ from progBar import PBar
 from os import path
 import random
 
-DATA_PATH = "../../data/"
+DATA_PATH = "/Storage/gkont/data/feb_jun/"
 class GraphExtractor:
 
     def __init__(self, first_weeks=True, verbose=False):
@@ -32,12 +32,12 @@ class GraphExtractor:
 
         if self.verbose:
             print("Graph extraction for {} 21 days".format("first" if first_weeks else "second"))
-        self.output_filename = DATA_PATH + "/graph_RELATION_{}21.tsv".format("first" if first_weeks else "second")
+        self.output_filename = DATA_PATH + "graph_RELATION_feb_jun.tsv"
         self.start_date = datetime(2022, 2, 23, 0, 0, 0)
 
         if first_weeks:
             """Extraction of first 21 days portion. Used for train/val/test"""
-            self.end_date = self.start_date + timedelta(days=21)
+            self.end_date = self.start_date + timedelta(days=122)
 
         else:
             """Extraction of second 21 and first 21 days portion. Used for future model eval"""

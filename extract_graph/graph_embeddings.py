@@ -4,21 +4,20 @@ E-mail: shevtsov@ics.forth.gr
 --------------------------------------
 Parse the tsv graph relation file and train the PytorchBigGraph model in order to store the graph embeddings
 ####################################################################################################################"""
-import ast
-import os, sys, argparse
 
-import h5py
+import argparse
+import os
+import sys
 
-sys.path.append('/mnt/c/Users/giankond/Documents/thesis/TwitterSuspension/')
+sys.path.append("/home/gkont/TwitterSuspension/")
+path_to_storage = "/Storage/gkont/"
 
-# os.environ['OPENBLAS_NUM_THREADS'] = '1'
+
+os.environ['OPENBLAS_NUM_THREADS'] = '1'
 
 from pathlib import Path
 from os import path
-
-from emb_parser import ParseEmbeddings
-import json
-
+from parser import ParseEmbeddings
 import torch.multiprocessing
 
 torch.multiprocessing.set_sharing_strategy('file_system')
@@ -26,20 +25,25 @@ torch.multiprocessing.set_sharing_strategy('file_system')
 from torchbiggraph.converters.importers import TSVEdgelistReader, convert_input_data
 from torchbiggraph.config import parse_config
 from torchbiggraph.train import train
-from torchbiggraph.util import SubprocessInitializer, set_logging_verbosity, setup_logging
-from graph_knn import NeighboursEmbeddings
+from torchbiggraph.util import SubprocessInitializer, setup_logging
+
+
+# from graph_knn import NeighboursEmbeddings
 
 class SocialGraphEmbedding:
     def __init__(self, graph_type, out_dimmensions, graph_period, first):
         self.dims = out_dimmensions
-        self.DATA_DIR = '../data'
-        self.period = graph_period
-        self.GRAPH_PATH = self.DATA_DIR + "/graph_{}_{}.tsv".format(graph_type, graph_period)
-        # self.GRAPH_PATH = self.DATA_DIR + "/graph_multy_first.tsv"
+        self.name = graph_period
 
-        self.name = "{}_{}_{}".format(graph_type, self.dims, graph_period)
+        self.DATA_DIR = path_to_storage + 'data/'
+        self.EMBED_DIR = path_to_storage + 'embeddings/'
+
+        self.period = graph_period
+        self.GRAPH_PATH = self.DATA_DIR +"/"+ self.name + "/graph_{}_{}.tsv".format(graph_type, graph_period)
+
+        
         self.MODEL_DIR = 'model_{}'.format(self.name)
-        self.parser = ParseEmbeddings(graph_type, out_dimmensions, graph_period, first)
+        # self.parser = ParseEmbeddings(graph_type, out_dimmensions, graph_period, first)
         if not path.isfile(self.GRAPH_PATH):
             print("Graph :{} not exists!")
             sys.exit(-1)
@@ -47,69 +51,14 @@ class SocialGraphEmbedding:
 
         # self.parser.store_embeddings()
 
-    def pretrained_and_new_nodes(self, pretrained_nodes, new_nodes, entity_file, entity_count, embeddings_path):
-        """
-        pretrained_nodes:
-            A dictionary of nodes and their embeddings
-        new_nodes:
-            A list of new nodes,each new node must have an embedding in pretrained_nodes.
-            If no new nodes, use []
-        entity_name:
-            The entity's name, for example, WHATEVER_0
-        data_dir:
-            The path to the files that record graph nodes and edges
-        embeddings_path:
-            The path to the .h5 file of embeddings
-        """
-        with open(entity_file, 'r') as source:
-            nodes = json.load(source)
-        dist = {item: ind for ind, item in enumerate(nodes)}
-
-        if len(new_nodes) > 0:
-            # modify both the node names and the node count
-            extended = nodes.copy()
-            extended.extend(new_nodes)
-            with open(entity_file, 'w') as source:
-                json.dump(extended, source)
-            with open(entity_count, 'w') as source:
-                source.write('%i' % len(extended))
-
-        if len(new_nodes) == 0:
-            # if no new nodes are added, we won't bother create a new .h5 file, but just modify the original one
-            with h5py.File(embeddings_path, 'r+') as source:
-
-                for node, embedding in pretrained_nodes.items():
-                    if node in nodes:
-                        source['embeddings'][dist[node]] = embedding
-        else:
-            # if there are new nodes, then we must create a new .h5 file
-            # see https://stackoverflow.com/a/47074545/8366805
-            with h5py.File(embeddings_path, 'r+') as source:
-                embeddings = list(source['embeddings'])
-                optimizer = list(source['optimizer'])
-            for node, embedding in pretrained_nodes.items():
-                if node in nodes:
-                    embeddings[dist[node]] = embedding
-            # append new nodes in order
-            for node in new_nodes:
-                if node not in list(pretrained_nodes.keys()):
-                    raise ValueError
-                else:
-                    embeddings.append(pretrained_nodes[node])
-            # write a new .h5 file for the embedding
-            with h5py.File(embeddings_path, 'w') as source:
-                source.create_dataset('embeddings', data=embeddings, )
-                optimizer = [item.encode('ascii') for item in optimizer]
-                source.create_dataset('optimizer', data=optimizer)
-
     """Generates configuration file in form of pytorchBigGraph"""
 
     def create_config(self):
         return dict(
             # I/O data
-            entity_path="entity_{}_json/".format(self.name),
-            edge_paths=["edges_{}_json/".format(self.name)],
-            checkpoint_path="checkpoint_{}_json/".format(self.name),
+            entity_path=self.EMBED_DIR + self.name + "/entity_{}_json/".format(self.name),
+            edge_paths=[self.EMBED_DIR + self.name + "/edges_{}_json/".format(self.name)],
+            checkpoint_path=self.EMBED_DIR + self.name + "/checkpoint_{}_json/".format(self.name),
             # Graph structure
             entities={"user": {"num_partitions": 1}},
             relations=[
@@ -125,31 +74,19 @@ class SocialGraphEmbedding:
             global_emb=False,
             comparator="dot",
             num_epochs=50,
-            # num_edge_chunks=10,
-            # batch_size=10000,
-            # num_batch_negs=500,
+            num_edge_chunks=10,
+            batch_size=10000,
+            num_batch_negs=500,
             num_uniform_negs=500,
             loss_fn="softmax",
             lr=0.1,
-            # relation_lr=0.01,
+            relation_lr=0.01,
             eval_fraction=0.0005,
-            # eval_num_batch_negs=10000,
-            # eval_num_uniform_negs=0,
+            eval_num_batch_negs=10000,
+            eval_num_uniform_negs=0,
             # GPU
-            # num_gpus=1,
+            num_gpus=1,
         )
-
-        # with open(nodes_path, 'r') as f:
-        #     node_names = json.load(f)
-        #
-        # with h5py.File(embeddings_path, 'r') as g:
-        #     embeddings = g['embeddings'][:]
-        #
-        # node2embedding_PlanB = dict(zip(node_names, embeddings))
-        # print('hey')
-
-
-
 
     def trainEmbeddings(self):
         setup_logging()
@@ -169,26 +106,19 @@ class SocialGraphEmbedding:
 
         # train embeddings
         train(config, subprocess_init=subprocess_init)
-
-
-
+        # torchbiggraph_train_gpu(config, subprocess_init=subprecess_init) 
 
     def main(self):
-
         # if path.exists(self.parser.entity_file) and path.exists(self.parser.embeddings_file):
-        if self.period != 'first':
-            print('new graph')
-            # print("Embedding already exists... Creating new embeddings")
-            self.trainEmbeddings()
-            return None
+        # if self.period != 'first':
+        #     print('new graph')
+        #     # print("Embedding already exists... Creating new embeddings")
+        #     self.trainEmbeddings()
+        #     return None
 
-
-        print('first graph')
+        print('training graph : ', self.period)
         # initial embeddings
-        self.name = "first"
         self.trainEmbeddings()
-        new_nodes = self.newNodes()
-        placeNewNodes(self.new_nodes_path, self.new_embeds_path, new_nodes)
 
 
 parser = argparse.ArgumentParser(
@@ -218,32 +148,18 @@ parser.add_argument('--fourth', dest='fourth', default=False, action='store_true
 args = parser.parse_args()
 
 if __name__ == "__main__":
-    graph_type = ""
-    if args.multy:
-        graph_type = "multy"
-    elif args.quote:
-        graph_type = "quote"
-    elif args.mention:
-        graph_type = "mention"
-    elif args.retweet:
-        graph_type = "retweet"
-    if graph_type == "":
-        print("Select the graph relation (--multy or --retweet or --quote or --mention).")
-        sys.exit(-1)
-
     graph_period = ""
     if args.first:
-        graph_period = "first"
+        graph_period = "feb_mar"
     elif args.second:
-        graph_period = "second"
+        graph_period = "feb_apr"
     elif args.third:
-        graph_period = "third"
+        graph_period = "feb_may"
     elif args.fourth:
-        graph_period = "fourth"
+        graph_period = "feb_jun"
     if graph_period == "":
         print("Select the graph period (--first or --second or --third or --fourth).")
         sys.exit(-1)
 
-    print(graph_period)
-    PTBG = SocialGraphEmbedding(graph_type, args.dims, graph_period, first=False if args.second_weeks else True)
+    PTBG = SocialGraphEmbedding("multy", args.dims, graph_period, first=False if args.second_weeks else True)
     print("Done")
