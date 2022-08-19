@@ -1,5 +1,18 @@
 import numpy as np
 
+"""Fine-tune parameters for Logistic-Regression model"""
+LR_params = {
+    'solver': ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga'],
+    'max_iter': [2000, 3000, 4000, 5000],
+    'C': [1000, 100, 10, 1.0, 0.1, 0.01, 0.001],
+    'multi_class': ['ovr']
+}
+
+"""Fine-tune parameters for Naive-Bayes model"""
+NB_params = {
+    'var_smoothing': [float(x) for x in np.logspace(0, -9, num=100)]
+}
+
 """Fine-tune parameters for SVM model"""
 SVM_params = {
     'C': [0.1, 1, 10, 100, 200, 300, 500],

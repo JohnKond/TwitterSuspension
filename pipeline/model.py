@@ -12,6 +12,8 @@ from train_model import TrainModel
 # change train_input_folder to your folder path that contains train.tsv and test.tsv
 period = 'feb_mar'
 train_input_folder = '/Storage/gkont/model_input/{}/'.format(period)
+# windows (put in comments)
+train_input_folder = 'C:/Users/giankond/Documents/thesis/Project/data/'
 
 path = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + '/'
 
@@ -70,10 +72,10 @@ def feature_selection(X_train, y_train, X_test, y_test):
     X_test = X_test[features]
 
     # example dataset
-    #X_train = X_train.iloc[:100]
-    #y_train = y_train.iloc[:100]
-    #X_test = X_test.iloc[:99]
-    #y_test = y_test.iloc[:99]
+    X_train = X_train.iloc[:100]
+    y_train = y_train.iloc[:100]
+    X_test = X_test.iloc[:99]
+    y_test = y_test.iloc[:99]
 
     return X_train, y_train, X_test, y_test
 
@@ -88,7 +90,7 @@ def main():
     X_train, y_train, X_test, y_test = feature_selection(X_train, y_train, X_test, y_test)
 
     # train models
-    TrainModel('feb_mar', X_train, y_train,k_folds=5)
+    TrainModel('feb_mar', X_train, y_train, k_folds=5)
 
 
 main()

@@ -9,13 +9,18 @@ import os.path
 
 import numpy as np
 import pandas as pd
+
+# import classifiers
 from sklearn import svm
 from sklearn.ensemble import RandomForestClassifier
 import xgboost as xgb
+from sklearn.naive_bayes import GaussianNB
+from sklearn.linear_model import LogisticRegression
+
 from sklearn.metrics import f1_score
 from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import StandardScaler
-from modelParamsUtils import SVM_parameter_list, RF_parameter_list, XGB_parameter_list
+from modelParamsUtils import SVM_parameter_list, RF_parameter_list, XGB_parameter_list, NB_parameter_list, LR_parameter_list
 from SaveLoadUtils import save_params, save_scores
 # GPU libs (cuML)
 # from cuml.svm import SVC as SVC_gpu
@@ -37,7 +42,6 @@ class TrainModel:
 
     def model_classifier(self, name, entry):
         if name == 'SVM':
-            #clf = SVC_gpu(
             clf = svm.SVC(
                           kernel=entry['kernel'],
                           C=float(entry['C']),
@@ -49,7 +53,6 @@ class TrainModel:
             else:
                 bootstrap = False
 
-            #clf = cuRF(
             clf = RandomForestClassifier(
                 n_estimators=int(entry['n_estimators']),
                 max_features=entry['max_features'],
@@ -59,6 +62,20 @@ class TrainModel:
                 bootstrap=bootstrap,
                 n_jobs=-1,
                 verbose=0
+            )
+        elif name == 'NB':
+            clf = GaussianNB(
+                var_smoothing=float(entry['var_smoothing']),
+                # n_jobs=-1,
+                # verbose=0
+            )
+        elif name == 'LR':
+            clf = LogisticRegression(
+                solver=entry['solver'],
+                max_iter=int(entry['max_iter']),
+                C=float(entry['C']),
+                multi_class=entry['multi_class'],
+                n_jobs=-1
             )
         else:
             if entry['objective'] == 'binary:logistic':
@@ -102,6 +119,10 @@ class TrainModel:
             return SVM_parameter_list()
         elif name == 'RF':
             return RF_parameter_list()
+        elif name == 'NB':
+            return NB_parameter_list()
+        elif name == 'LR':
+            return LR_parameter_list()
         else:
             return XGB_parameter_list()
 
@@ -126,7 +147,7 @@ class TrainModel:
             setup_index = 1
             for entry in config:
 
-                print(' - Testing setup : {} (fold {})'.format(setup_index,fold_index))
+                print(' - Testing setup {} : {} (fold {})'.format(setup_index,entry,fold_index))
 
                 # select classifier
                 clf = self.model_classifier(name, entry)
@@ -189,30 +210,35 @@ class TrainModel:
         return best_param_set
 
     def models_finetuning(self):
-        self.finetune('RF')
-        self.finetune('SVM')
-        self.finetune('XGB')
+        self.finetune('LR')
+        # self.finetune('NB')
+        # self.finetune('RF')
+        # self.finetune('SVM')
+        # self.finetune('XGB')
 
     def create_folds(self):
+        '''
         # check if folds indexes exists
         if os.path.exists('fold_indexes.pkl'):
             print('Importing folds from file..')
             with open('fold_indexes.pkl', "rb") as output:
                 self.folds_dict = pickle.load(output)
             return
-        
+        '''
+
         k_folds = StratifiedKFold(n_splits=self.k_folds, shuffle=True)
         i = 1
         for train_index, val_index in k_folds.split(self.X_train, self.y_train):
             self.folds_dict['fold_'+str(i)] = [train_index, val_index]
             i = i+1
 
+        '''
         # store folds indexes in file
         with open('fold_indexes.pkl', "wb") as output:
             pickle.dump(self.folds_dict, output)
 
         print(str(self.k_folds) + ' folds created..\n')
-        
+        '''
 
     def main(self):
         self.create_folds()
