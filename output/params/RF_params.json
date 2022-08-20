@@ -1,0 +1,1 @@
+{"n_estimators": 1000, "max_features": "sqrt", "max_depth": 45,"min_samples_split": 6, "min_samples_leaf": 1, "bootstrap": True}

@@ -5,3 +5,22 @@ Average validation score : 0.7285188332435085
 Average train score : 0.9992717477526243
 
 
+Random-Forest
+---------------
+Training time : 33251 seconds
+Average validation score : 0.72386
+Average train score : 1.0
+
+
+Logistic Regression
+---------------
+Training time : 6806 seconds
+Average validation score : 0.6762
+Average train score : 0.6768
+
+
+Naive-Bayes
+---------------
+Training time : 458 seconds
+Average validation score : 0.6310
+Average train score : 0.6311
