@@ -1,6 +1,27 @@
 import ast
 import random
-from global_params import SVM_params, RF_params, XGB_params
+from global_params import SVM_params, RF_params, XGB_params, NB_params, LR_params
+
+
+def LR_parameter_list():
+    params = []
+    for solver in LR_params['solver']:
+        for max_iter in LR_params['max_iter']:
+            for C in LR_params['C']:
+                for multi_class in LR_params['multi_class']:
+                    params.append({"solver": solver, "max_iter": max_iter, "C": C, "multi_class": multi_class})
+    random.shuffle(params)
+    # config = random.sample(params, 100)
+    return params
+
+
+def NB_parameter_list():
+    params = []
+    for var in NB_params['var_smoothing']:
+        params.append({"var_smoothing":var})
+    random.shuffle(params)
+    # config = random.sample(params, 100)
+    return params
 
 
 def SVM_parameter_list():
