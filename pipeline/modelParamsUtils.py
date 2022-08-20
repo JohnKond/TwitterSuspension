@@ -1,6 +1,6 @@
 import ast
 import random
-from global_params import SVM_params, RF_params, XGB_params, NB_params, LR_params
+from globalParams import SVM_params, RF_params, XGB_params, NB_params, LR_params
 
 
 def LR_parameter_list():

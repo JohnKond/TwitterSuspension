@@ -7,6 +7,7 @@ import time
 import featureSelectionUtils
 from SaveLoadUtils import save_params, load_params, save_scores
 from train_model import TrainModel
+from test_model import TestModel
 
 
 # change train_input_folder to your folder path that contains train.tsv and test.tsv
@@ -44,6 +45,7 @@ def feature_selection(X_train, y_train, X_test, y_test):
     print('Path : ', path)
     # if feature selection is implemented import features
     if os.path.exists(path + 'FSfeatures/features.txt'):
+        print('Importing features from file..')
         with open(path + '/FSfeatures/features.txt') as f:
             features = f.readlines()
         features = [x.strip() for x in features]
@@ -72,10 +74,10 @@ def feature_selection(X_train, y_train, X_test, y_test):
     X_test = X_test[features]
 
     # example dataset
-    X_train = X_train.iloc[:100]
-    y_train = y_train.iloc[:100]
-    X_test = X_test.iloc[:99]
-    y_test = y_test.iloc[:99]
+    # X_train = X_train.iloc[:100]
+    # y_train = y_train.iloc[:100]
+    # X_test = X_test.iloc[:99]
+    # y_test = y_test.iloc[:99]
 
     return X_train, y_train, X_test, y_test
 
@@ -90,7 +92,10 @@ def main():
     X_train, y_train, X_test, y_test = feature_selection(X_train, y_train, X_test, y_test)
 
     # train models
-    TrainModel('feb_mar', X_train, y_train, k_folds=5)
+    # TrainModel('feb_mar', X_train, y_train, k_folds=5)
+
+    # test model
+    TestModel(X_train, y_train, X_test, y_test)
 
 
 main()
