@@ -1,0 +1,1 @@
+{"n_estimators": 2500, "colsample_bytree": 0.9, "max_depth": 11, "gamma": 0.5, "reg_alpha": 1, "reg_lambda": 0.2, "subsample": 0.6, "learning_rate": 0.015, "objective": "binary:logistic"}

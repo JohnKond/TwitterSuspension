@@ -1,0 +1,7 @@
+XGB
+---------------
+Training time : 55014.793622493744 seconds
+Average validation score : 0.7285188332435085
+Average train score : 0.9992717477526243
+
+
