@@ -9,7 +9,7 @@ from sklearn.preprocessing import MinMaxScaler
 #data_folder = 'C:/Users/giankond/Documents/thesis/Project/data/'
 path = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + '/'
 
-class TestModel:
+class ModelTrain:
     def __init__(self, X_train, y_train, X_test, y_test):
         self.X_train = X_train
         self.y_train = y_train

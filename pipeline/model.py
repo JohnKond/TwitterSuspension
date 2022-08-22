@@ -6,8 +6,8 @@ import time
 
 import featureSelectionUtils
 from SaveLoadUtils import save_params, load_params, save_scores
-from train_model import TrainModel
-from test_model import TestModel
+from modelSelection import ModelSelection
+from modelTrain import ModelTrain
 
 
 # change train_input_folder to your folder path that contains train.tsv and test.tsv
@@ -91,11 +91,11 @@ def main():
     print('Initiating feature selection..')
     X_train, y_train, X_test, y_test = feature_selection(X_train, y_train, X_test, y_test)
 
-    # train models
-    # TrainModel('feb_mar', X_train, y_train, k_folds=5)
+    # model selection with training / validation on 1st month data
+    # ModelSelection('feb_mar', X_train, y_train, k_folds=5)
 
-    # test model
-    TestModel(X_train, y_train, X_test, y_test)
+    # train/save best model and scaler on first month data
+    ModelTrain(X_train, y_train, X_test, y_test)
 
 
 main()

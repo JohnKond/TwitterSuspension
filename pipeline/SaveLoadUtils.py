@@ -37,13 +37,16 @@ def save_model(model):
     filename = 'model.pkl'
     pickle.dump(model,open(filename,'wb'))
 
+
 def load_model():
     loaded_model = pickle.load(open('model.pkl','rb'))
     return loaded_model
 
+
 def save_scaler(scaler):
     filename = 'scaler.pkl'
     pickle.dump(scaler,open(filename,'wb'))
+
 
 def load_scaler():
     loaded_scaler = pickle.load(open('scaler.pkl','rb'))
