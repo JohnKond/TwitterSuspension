@@ -14,7 +14,7 @@ from test_model import TestModel
 period = 'feb_mar'
 train_input_folder = '/Storage/gkont/model_input/{}/'.format(period)
 # windows (put in comments)
-train_input_folder = 'C:/Users/giankond/Documents/thesis/Project/data/'
+#train_input_folder = 'C:/Users/giankond/Documents/thesis/Project/data/'
 
 path = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + '/'
 

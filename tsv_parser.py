@@ -4,7 +4,7 @@ import h5py
 import pandas as pd
 
 # change for each graph
-period = 'feb_mar'
+period = 'feb_may'
 
 suspended_users = set()
 compl_users = set()

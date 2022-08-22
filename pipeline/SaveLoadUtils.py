@@ -32,7 +32,22 @@ def save_scores(Mtype, score, train_score, time):
     fp.write('Average validation score : ' + str(score) + '\n')
     fp.write('Average train score : ' + str(train_score) + '\n\n\n')
     
-     
+    
+def save_model(model):
+    filename = 'model.pkl'
+    pickle.dump(model,open(filename,'wb'))
+
+def load_model():
+    loaded_model = pickle.load(open('model.pkl','rb'))
+    return loaded_model
+
+def save_scaler(scaler):
+    filename = 'scaler.pkl'
+    pickle.dump(scaler,open(filename,'wb'))
+
+def load_scaler():
+    loaded_scaler = pickle.load(open('scaler.pkl','rb'))
+    return loaded_scaler
 
 
 
