@@ -1,6 +1,8 @@
 import json
 import os
 import os.path
+import pandas as pd
+import numpy as np
 import xgboost as xgb
 from sklearn.metrics import f1_score
 from SaveLoadUtils import load_params,save_model,load_model,save_scaler,load_scaler
@@ -10,21 +12,26 @@ from sklearn.preprocessing import MinMaxScaler
 path = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + '/'
 
 class ModelTrain:
-    def __init__(self, X_train, y_train, X_test, y_test):
+    def __init__(self, period, folder_path,X_train,y_train,X_test,y_test):
+
+        self.X = pd.concat([X_train, X_test])
+        self.y = np.concatenate([y_train, y_test])
+        #self.X = pd.read_csv('{}{}/social_features_{}.tsv'.format(folder_path,period,period),sep='\t',dtype={"user_id":"string"})
+        #self.y = self.X['target'].copy()
+        #self.X.drop(['target','user_id'], axis=1, inplace=True)
+        '''
         self.X_train = X_train
         self.y_train = y_train
         self.X_test = X_test
         self.y_test = y_test
+        '''
         self.main()
 
     def import_model(self):
         print('importing model from file')
         self.model = load_model()
 
-    def train_model(self):
-        #f = open(path+'output/params/XGB_params.json', "r")
-        #model_params = json.loads(f.read())
-        
+    def train_model(self,X,y):
         model_params = load_params('XGB')
 
         self.model = xgb.XGBClassifier(
@@ -44,13 +51,13 @@ class ModelTrain:
 
         ''' Scale data '''
         scaler = MinMaxScaler()
-        X_train_scaled = scaler.fit_transform(self.X_train.copy())
+        X_scaled = scaler.fit_transform(self.X.copy())
         
         ''' Store scaller '''
         save_scaler(scaler)
 
         ''' Train model with first month trained data '''
-        self.model.fit(X_train_scaled, self.y_train)
+        self.model.fit(X_scaled, self.y)
 
         ''' Save model '''
         save_model(self.model)
@@ -65,16 +72,11 @@ class ModelTrain:
 
 
     def main(self):
-        
         if os.path.isfile('model.pkl'):
-            print('Importing model from file..')
-            self.model = load_model()
-            self.scaler = load_scaler()
+            print('Model already exists')
         else:
             print('Train model with best parameters')
-            self.train_model()
-            #print('Predict X_test')
-            #self.model_predict()
-
-        return None
+            self.train_model(self.X, self.y)
+            print('Training done')
+        return 
 

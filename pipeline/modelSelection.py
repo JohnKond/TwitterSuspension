@@ -236,4 +236,4 @@ class ModelSelection:
     def main(self):
         self.create_folds()
         self.models_finetuning()
-        print('Training finished')
+        print('Model selection done')

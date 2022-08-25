@@ -1,10 +1,11 @@
 import json
-
+import argparse
 import h5py
 import pandas as pd
 
 # change for each graph
-period = 'feb_may'
+period = 'feb_jun'
+#months_to_ignore = ['feb_mar']
 
 suspended_users = set()
 compl_users = set()
@@ -14,7 +15,20 @@ entity_file = '/Storage/gkont/embeddings/{}/entity_{}_json/entity_names_user_0.j
 embeddings_file = '/Storage/gkont/embeddings/{}/checkpoint_{}_json/embeddings_user_0.v500.h5'.format(period, period)
 new_entity_file = '/Storage/gkont/embeddings/{}/entity_{}_json/new_users.txt'.format(period,period)
 labels_file = '/Storage/gkont/embeddings/{}/entity_{}_json/labels.txt'.format(period,period)
+
+
 output_file = '/Storage/gkont/embeddings/{}/social_features_{}.tsv'.format(period, period)
+#month_users_output_file = '/Storage/gkont/model_input/{}/selected_relations_{}.tsv'.format(period,period)
+
+'''
+parser = argparse.ArgumentParser()
+parser.add_argument('--selected', action='store_true')
+args = parser.parse_args()
+
+if args.selected:
+    print('Select users only in month : ',period)
+    output_file = month_users_output_file
+'''
 
 
 def read_compliance():
@@ -50,6 +64,21 @@ def selected_users_dict():
             uid.append(name)
             target.append(label)
     print('Got selected users')
+
+    '''
+    if args.selected == True:
+        for month in months_to_ignore:
+            print('Searching in month: ',month)
+            users_filename = '/Storage/gkont/embeddings/{}/entity_{}_json/entity_names_user_0.json'.format(period,period)
+            with open(users_filename) as names:
+                data = set(json.load(names))
+                
+            for name in uid:
+                if name in data:
+                    index = uid.index(name)
+                    uid.pop(index)
+                    target.pop(index)
+    '''
     return uid, target
    # write_lists_in_files(uid,target)
 
@@ -68,20 +97,6 @@ def write_lists_in_files(uid,target):
 
 def create_tsv(uid, target):
 
-    '''
-    uid = []
-    target = []
-    with open(new_entity_file, 'r') as fp:
-        for line in fp:
-            x = line[:-1]
-            uid.append(x)
-
-    with open(labels_file,'r') as lp:
-        for line in lp:
-            x = line[:-1]
-            target.append(x)
-
-    '''
     with open(entity_file, "rt") as tf:
         names = json.load(tf)
     """Cast to dictionary making much faster search process"""

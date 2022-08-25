@@ -40,6 +40,13 @@ print('Stored train and test dataset')
 
 
 
+def read_month():
+    return None
+
+
+
+
+
 
 
 
