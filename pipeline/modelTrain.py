@@ -12,7 +12,7 @@ from sklearn.preprocessing import MinMaxScaler
 path = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + '/'
 
 class ModelTrain:
-    def __init__(self, period, folder_path,X_train,y_train,X_test,y_test):
+    def __init__(self,X_train,y_train,X_test,y_test):
 
         self.X = pd.concat([X_train, X_test])
         self.y = np.concatenate([y_train, y_test])

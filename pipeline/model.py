@@ -86,7 +86,7 @@ def feature_selection(X_train, y_train, X_test, y_test):
 
 def main():
    
-    '''    
+      
     # read input training and test datasets
     print('Reading input files..')
     X_train, y_train, X_test, y_test = read_input()
@@ -96,17 +96,17 @@ def main():
     X_train, y_train, X_test, y_test = feature_selection(X_train, y_train, X_test, y_test)
     
 
-    print('Initiating model selection..')
+    #print('Initiating model selection..')
     # model selection with training / validation on 1st month data
     # ModelSelection('feb_mar', X_train, y_train, k_folds=5)
-    '''
+    
 
     # train/save best model and scaler on first month data
-    # ModelTrain('feb_mar', train_input_folder, X_train, y_train, X_test, y_test)
+    ModelTrain(X_train, y_train, X_test, y_test)
 
     
     # model predict with data from specified months
-    ModelPredict('feb_apr',train_input_folder,fit=True)
+    # ModelPredict('feb_apr',train_input_folder,fit=True)
 
 
 main()
