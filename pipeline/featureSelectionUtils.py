@@ -12,6 +12,8 @@ from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import StandardScaler
 
+path = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + '/'
+
 def Lasso_finetuning(X_train, Y_train, X_test, Y_test, lasso_dict):
     alpha = np.arange(0.0001, 0.1, 0.001)
 
@@ -68,21 +70,28 @@ def feature_selection_train(X_train, y_train):
     return significant_features(X_train, y_train, alpha=alpha)
 
 
+def import_features():
+    if os.path.exists(path + 'FSfeatures/features.txt'):
+        print('Importing features from file..')
+        with open(path + '/FSfeatures/features.txt') as f:
+            features = f.readlines()
+        features = [x.strip() for x in features]
+        return features
+    print('FSfeatures/features.txt file exist.')
+
 
 ''' 
     Perform feature selection if not done, and return new 
     train and test files. If feature selection was previously 
     implemented, load the features and return the datasets.
 '''
+
+
 def feature_selection(X_train, y_train, X_test, y_test, path):
     print('Path : ', path)
     # if feature selection is implemented import features
     if os.path.exists(path + 'FSfeatures/features.txt'):
-        print('Importing features from file..')
-        with open(path + '/FSfeatures/features.txt') as f:
-            features = f.readlines()
-        features = [x.strip() for x in features]
-
+        features = import_features()
     else:
 
         fs_start = time.time()

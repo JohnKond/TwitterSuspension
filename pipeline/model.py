@@ -18,8 +18,6 @@ train_input_folder = '/Storage/gkont/model_input/'
 # windows (put in comments)
 # train_input_folder = 'C:/Users/giankond/Documents/thesis/Project/data/'
 
-path = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + '/'
-
 '''
     Read input files train.tsv and test.tsv. For this step first
     run dataSplit.py
