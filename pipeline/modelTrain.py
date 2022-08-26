@@ -66,7 +66,7 @@ class ModelTrain:
    
 
     def model_predict(self):
-        y_pred = self.clf.predict(self.X_test)
+        y_pred = self.model.predict(self.X_test)
         score = f1_score(self.y_test, y_pred)
         print(score)
 

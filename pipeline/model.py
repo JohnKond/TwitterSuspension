@@ -88,7 +88,7 @@ def main():
     elif args.fit:
         assert args.period in months, "Select a valid month period"
         print('Model fit on month {}'.format(args.period))
-        # ModelFit(args.period, train_input_folder, balance=True)
+        ModelFit(args.period, train_input_folder, balance=True)
 
 
 main()

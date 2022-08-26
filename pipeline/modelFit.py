@@ -9,11 +9,17 @@ class ModelFit:
         self.period = period
         self.folder_path = train_folder
         self.balance = balance
-
         self.main()
 
 
+    def import_model(self):
+        print('Importing model and scaler')
+        self.model = load_model()
+        self.scaler = load_scaler()
+
+
     def read_month(self):
+        print('read previous users of {}'.format(self.period))
         self.X_train = pd.read_csv('{}{}/previous_users_{}.tsv'.format(self.folder_path, self.period, self.period),
                                    sep='\t', dtype={"user_id": "string"})
         self.y_train = self.X_train['target'].copy()
@@ -28,15 +34,18 @@ class ModelFit:
             undersample = RandomUnderSampler(sampling_strategy='majority')
             self.X_train, self.y_train = undersample.fit_resample(self.X_train, self.y_train)
 
+
     def fit_model(self, X, y):
 
         # scale data
-        X_scaled = self.scaler.transform(X.copy()) # transform or fit_transform
+        X_scaled = self.scaler.fit_transform(X.copy()) # transform or fit_transform
         self.model.fit(X_scaled, y)
         save_model(self.model)
+        save_scaler(self.scaler)
 
 
     def main(self):
+        self.import_model()
         self.read_month()
         self.fit_model(self.X_train, self.y_train)
         print('End fit model')
