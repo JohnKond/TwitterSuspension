@@ -87,7 +87,7 @@ def import_features():
 '''
 
 
-def feature_selection(X_train, y_train, X_test, y_test, path):
+def feature_selection(X_train, y_train, X_test, y_test):
     print('Path : ', path)
     # if feature selection is implemented import features
     if os.path.exists(path + 'FSfeatures/features.txt'):

@@ -39,6 +39,7 @@ def read_input():
 
 def main():
 
+    '''
     # read input training and test datasets
     print('Reading input files..')
     X_train, y_train, X_test, y_test = read_input()
@@ -52,10 +53,11 @@ def main():
     # ModelSelection('feb_mar', X_train, y_train, k_folds=5)
 
     # train/save best model and scaler on first month data
-    ModelTrain(X_train, y_train, X_test, y_test)
+    # ModelTrain(X_train, y_train, X_test, y_test)
+    '''
 
     # model predict with data from specified months
-    # ModelPredict('feb_apr',train_input_folder,fit=True)
+    ModelPredict('feb_jun', train_input_folder, balance=True, fit=False)
 
 
 main()
