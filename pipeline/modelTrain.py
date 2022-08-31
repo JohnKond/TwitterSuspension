@@ -34,6 +34,7 @@ class ModelTrain:
 
     def read_month(self):
         if os.path.isfile('{}{}/train.tsv'.format(self.folder_path, self.period)):
+            print('Read month {}'.format(self.period))
             self.X = pd.read_csv('{}{}/train.tsv'.format(self.folder_path, self.period))
         else:
             print('Error: train.tsv does not exist. Please run dataSplit.py on period {} first.')
