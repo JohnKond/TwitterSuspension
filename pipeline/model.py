@@ -25,10 +25,13 @@ parser.add_argument('--in_month', action='store_true')
 
 args = parser.parse_args()
 
+
 # change train_input_folder to your folder path that contains train.tsv and test.tsv
-period = 'feb_mar'
+# period = 'feb_mar'
 months = ['feb_apr', 'feb_may', 'feb_jun']
 train_input_folder = '/Storage/gkont/model_input/'
+period = args.period
+assert args.period in months, "Select a valid month period"
 
 # windows (put in comments)
 # train_input_folder = 'C:/Users/giankond/Documents/thesis/Project/data/'
@@ -69,6 +72,7 @@ def main():
         ModelSelection('feb_mar', X_train, y_train, k_folds=5)
 
     elif args.train:
+        '''
         # read input training and test datasets
         print('Reading input files..')
         X_train, y_train, X_test, y_test = read_input()
@@ -76,21 +80,23 @@ def main():
         # perform feature selection and return new train and test dataset
         print('Initiating feature selection..')
         X_train, y_train, X_test, y_test = feature_selection(X_train, y_train, X_test, y_test)
+        '''
+
         print('Model train on month feb_mar')
-        # train/save best model and scaler on first month data
-        ModelTrain(X_train, y_train, X_test, y_test)
+        # train/save best model and scaler on specified month data
+        ModelTrain(train_input_folder, args.period)
 
     elif args.predict:
         assert args.period in months, "Select a valid month period"
         print('Model predict on month {}'.format(args.period))
         # model fit predict with data from specified months
-        ModelFit(args.period, args.in_month, train_input_folder, balance=True)
+        # ModelFit(args.period, args.in_month, train_input_folder, balance=True)
         ModelPredict(args.period, args.in_month, train_input_folder, balance=True)
 
     elif args.fit:
         assert args.period in months, "Select a valid month period"
         print('Model fit on month {}'.format(args.period))
-        ModelFit(args.period, train_input_folder, balance=True)
+        ModelFit(args.period, args.in_month, train_input_folder, balance=True)
 
 
 main()

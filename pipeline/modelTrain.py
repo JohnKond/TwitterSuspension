@@ -1,6 +1,8 @@
 import json
 import os
 import os.path
+import sys
+
 import pandas as pd
 import numpy as np
 import xgboost as xgb
@@ -9,13 +11,16 @@ from SaveLoadUtils import load_params,save_model,load_model,save_scaler,load_sca
 from sklearn.preprocessing import MinMaxScaler
 
 #data_folder = 'C:/Users/giankond/Documents/thesis/Project/data/'
+from pipeline.featureSelectionUtils import import_features
+
 path = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + '/'
 
 class ModelTrain:
-    def __init__(self,X_train,y_train,X_test,y_test):
-
-        self.X = pd.concat([X_train, X_test])
-        self.y = np.concatenate([y_train, y_test])
+    def __init__(self, train_folder, period):
+        self.folder_path = train_folder
+        self.period = period
+        # self.X = pd.concat([X_train, X_test])
+        # self.y = np.concatenate([y_train, y_test])
         #self.X = pd.read_csv('{}{}/social_features_{}.tsv'.format(folder_path,period,period),sep='\t',dtype={"user_id":"string"})
         #self.y = self.X['target'].copy()
         #self.X.drop(['target','user_id'], axis=1, inplace=True)
@@ -27,11 +32,25 @@ class ModelTrain:
         '''
         self.main()
 
+    def read_month(self):
+        if os.path.isfile('{}{}/train.tsv'.format(self.folder_path, self.period)):
+            self.X = pd.read_csv('{}{}/train.tsv'.format(self.folder_path, self.period))
+        else:
+            print('Error: train.tsv does not exist. Please run dataSplit.py on period {} first.')
+            sys.exit()
+
+        self.y = self.X['target'].copy()
+        self.X.drop(['target', 'user_id'], axis=1, inplace=True)
+
+        # select features
+        features = import_features()
+        self.X = self.X[features]
+
     def import_model(self):
         print('importing model from file')
         self.model = load_model()
 
-    def train_model(self,X,y):
+    def train_model(self, X, y):
         model_params = load_params('XGB')
 
         self.model = xgb.XGBClassifier(
@@ -61,17 +80,10 @@ class ModelTrain:
 
         ''' Save model '''
         save_model(self.model)
-        
-
-   
-
-    def model_predict(self):
-        y_pred = self.model.predict(self.X_test)
-        score = f1_score(self.y_test, y_pred)
-        print(score)
 
 
     def main(self):
+        self.read_month()
         if os.path.isfile('model.pkl'):
             print('Model already exists')
         else:

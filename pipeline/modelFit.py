@@ -23,11 +23,11 @@ class ModelFit:
 
 
     def read_month(self):
-        print('read previous users of {}'.format(self.period))
+        #print('read previous users of {}'.format(self.period))
 
         if self.in_month:
             if os.path.isfile('{}{}/train.tsv'.format(self.folder_path, self.period)):
-                X_train = pd.read_csv('{}{}/train.tsv'.format(self.folder_path, self.period))
+                self.X_train = pd.read_csv('{}{}/train.tsv'.format(self.folder_path, self.period))
             else:
                 print('Error: train.tsv does not exist. Please run dataSplit.py on period {} first.')
                 sys.exit()
@@ -52,10 +52,10 @@ class ModelFit:
     def fit_model(self, X, y):
 
         # scale data
-        X_scaled = self.scaler.transform(X.copy()) # transform or fit_transform
+        X_scaled = self.scaler.fit_transform(X.copy()) # transform or fit_transform
         self.model.fit(X_scaled, y)
         save_model(self.model)
-        # save_scaler(self.scaler)
+        save_scaler(self.scaler)
 
 
     def main(self):
