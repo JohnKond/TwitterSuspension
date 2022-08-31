@@ -20,6 +20,7 @@ parser.add_argument('--model_selection', action='store_true')
 parser.add_argument('--fit', action='store_true')
 parser.add_argument('--train', action='store_true')
 parser.add_argument('--predict', action='store_true')
+parser.add_argument('--in_month', action='store_true')
 
 
 args = parser.parse_args()
@@ -82,8 +83,9 @@ def main():
     elif args.predict:
         assert args.period in months, "Select a valid month period"
         print('Model predict on month {}'.format(args.period))
-        # model predict with data from specified months
-        ModelPredict(args.period, train_input_folder, balance=True)
+        # model fit predict with data from specified months
+        ModelFit(args.period, args.in_month, train_input_folder, balance=True)
+        ModelPredict(args.period, args.in_month, train_input_folder, balance=True)
 
     elif args.fit:
         assert args.period in months, "Select a valid month period"

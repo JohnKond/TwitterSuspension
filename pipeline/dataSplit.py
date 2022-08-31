@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import argparse
 
 import pandas as pd
 import numpy as np
@@ -6,15 +7,23 @@ import sklearn
 from sklearn.model_selection import train_test_split
 from imblearn.under_sampling import RandomUnderSampler
 
-period = 'feb_mar'
-filename = '/Storage/gkont/embeddings/{}/social_features_{}.tsv'.format(period,period)
+parser = argparse.ArgumentParser()
+parser.add_argument('--period', type=str)
+args = parser.parse_args()
+
+
+months = ['feb_mar', 'feb_apr', 'feb_may', 'feb_jun']
+period = args.period
+assert period in months
+
+filename = '/Storage/gkont/embeddings/{}/social_features_{}.tsv'.format(period, period)
 
 
 df = pd.read_csv(filename, sep='\t', dtype={"user_id":"string"})
 
 # select target column
 Y = df["target"].copy()
-df.drop(["target","user_id"], axis=1, inplace= True)
+df.drop(["target", "user_id"], axis=1, inplace=True)
 
 
 # balance dataset
@@ -22,7 +31,7 @@ print('balance dataset')
 undersample = RandomUnderSampler(sampling_strategy='majority')
 df_bal, Y_bal = undersample.fit_resample(df, Y)
 
-print('Y_balanced value counts: ', Y_bal.value_counts())
+# print('Y_balanced value counts: ', Y_bal.value_counts())
 
 # stratified train-test split
 X_train, X_test, y_train, y_test = train_test_split(df_bal, Y_bal, test_size=0.2, stratify=Y_bal)
