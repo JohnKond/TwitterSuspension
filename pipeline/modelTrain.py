@@ -40,7 +40,7 @@ class ModelTrain:
             print('Error: train.tsv does not exist. Please run dataSplit.py on period {} first.')
             sys.exit()
 
-        self.y = self.X['target'].copy()
+        self.y = self.X["target"].copy()
         self.X.drop(['target', 'user_id'], axis=1, inplace=True)
 
         # select features
