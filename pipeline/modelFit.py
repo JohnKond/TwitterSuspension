@@ -27,7 +27,7 @@ class ModelFit:
 
         if self.in_month:
             if os.path.isfile('{}{}/train.tsv'.format(self.folder_path, self.period)):
-                self.X_train = pd.read_csv('{}{}/train.tsv'.format(self.folder_path, self.period))
+                self.X_train = pd.read_csv('{}{}/train.tsv'.format(self.folder_path, self.period), sep='\t', dtype={"user_id": "string"})
             else:
                 print('Error: train.tsv does not exist. Please run dataSplit.py on period {} first.')
                 sys.exit()
