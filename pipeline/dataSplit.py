@@ -16,7 +16,7 @@ months = ['feb_mar', 'feb_apr', 'feb_may', 'feb_jun']
 period = args.period
 assert period in months
 
-filename = '/Storage/gkont/embeddings/{}/social_features_{}.tsv'.format(period, period)
+filename = '/Storage/gkont/model_input/{}/social_features_{}.tsv'.format(period, period)
 
 
 df = pd.read_csv(filename, sep='\t', dtype={"user_id":"string"})
