@@ -20,6 +20,7 @@ class ModelPredict:
         print('reading {} month data'.format(self.period))
 
         if self.in_month:
+            print('Predict for all users on month {}'.format(self.period))
             if os.path.isfile('{}{}/test.tsv'.format(self.folder_path, self.period)):
                 self.X_test = pd.read_csv('{}{}/test.tsv'.format(self.folder_path, self.period), sep='\t', dtype={"user_id": "string"})
                 self.y_test = self.X['target'].copy()
