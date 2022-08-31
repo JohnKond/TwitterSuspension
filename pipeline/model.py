@@ -103,6 +103,6 @@ def main():
         assert args.period in months, "Select a valid month period"
         print('Train model and predict on train/test month {}'.format(period))
         ModelTrain(train_input_folder, args.period)
-        ModelPredict(args.period, args.in_month, train_input_folder, balance=True)
+        ModelPredict(args.period, train_input_folder, in_month=True, balance=True)
 
 main()

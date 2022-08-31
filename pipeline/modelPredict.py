@@ -8,7 +8,7 @@ from imblearn.under_sampling import RandomUnderSampler
 
 class ModelPredict:
 
-    def __init__(self, period, in_month, train_input_folder, balance):
+    def __init__(self, period,train_input_folder, in_month , balance):
         self.period = period
         self.in_month = in_month
         self.balance = balance
