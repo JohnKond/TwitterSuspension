@@ -75,7 +75,7 @@ def main():
         # perform feature selection and return new train and test dataset
         print('Initiating feature selection..')
         X_train, y_train, X_test, y_test = feature_selection(X_train, y_train, X_test, y_test)
-        print('Model train on month feb')
+        print('Model train on month feb_mar')
         # train/save best model and scaler on first month data
         ModelTrain(X_train, y_train, X_test, y_test)
 

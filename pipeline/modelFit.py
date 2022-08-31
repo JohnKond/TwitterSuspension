@@ -29,6 +29,8 @@ class ModelFit:
         features = import_features()
         self.X_train = self.X_train[features]
 
+
+
         # balance dataset
         if self.balance == True:
             undersample = RandomUnderSampler(sampling_strategy='majority')
