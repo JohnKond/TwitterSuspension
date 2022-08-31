@@ -37,7 +37,7 @@ class ModelTrain:
             print('Read month {}'.format(self.period))
             self.X = pd.read_csv('{}{}/train.tsv'.format(self.folder_path, self.period), sep='\t', dtype={"user_id": "string"})
             self.y = self.X['target'].copy()
-            self.X.drop(['target', 'user_id'], axis=1, inplace=True)
+            self.X.drop(['target'], axis=1, inplace=True)
 
             # select features
             features = import_features()

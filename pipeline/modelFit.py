@@ -28,14 +28,16 @@ class ModelFit:
         if self.in_month:
             if os.path.isfile('{}{}/train.tsv'.format(self.folder_path, self.period)):
                 self.X_train = pd.read_csv('{}{}/train.tsv'.format(self.folder_path, self.period), sep='\t', dtype={"user_id": "string"})
+                self.y_train = self.X_train['target'].copy()
+                self.X_train.drop(['target'], axis=1, inplace=True)
             else:
                 print('Error: train.tsv does not exist. Please run dataSplit.py on period {} first.')
                 sys.exit()
         else:
             self.X_train = pd.read_csv('{}{}/previous_users_{}.tsv'.format(self.folder_path, self.period, self.period), sep='\t', dtype={"user_id": "string"})
+            self.y_train = self.X_train['target'].copy()
+            self.X_train.drop(['target', 'user_id'], axis=1, inplace=True)
 
-        self.y_train = self.X_train['target'].copy()
-        self.X_train.drop(['target', 'user_id'], axis=1, inplace=True)
 
         # select features
         features = import_features()
