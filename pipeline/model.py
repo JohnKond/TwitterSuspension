@@ -82,7 +82,7 @@ def main():
         X_train, y_train, X_test, y_test = feature_selection(X_train, y_train, X_test, y_test)
         '''
 
-        print('Model train on month feb_mar')
+        print('Model train on month {}'.format(args.period))
         # train/save best model and scaler on specified month data
         ModelTrain(train_input_folder, args.period)
 
