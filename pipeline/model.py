@@ -21,6 +21,7 @@ parser.add_argument('--fit', action='store_true')
 parser.add_argument('--train', action='store_true')
 parser.add_argument('--predict', action='store_true')
 parser.add_argument('--in_month', action='store_true')
+parser.add_argument('--train_predict', action='store_true')
 
 
 args = parser.parse_args()
@@ -28,7 +29,7 @@ args = parser.parse_args()
 
 # change train_input_folder to your folder path that contains train.tsv and test.tsv
 # period = 'feb_mar'
-months = ['feb_apr', 'feb_may', 'feb_jun']
+months = ['feb_mar', 'feb_apr', 'feb_may', 'feb_jun']
 train_input_folder = '/Storage/gkont/model_input/'
 period = args.period
 assert args.period in months, "Select a valid month period"
@@ -98,5 +99,10 @@ def main():
         print('Model fit on month {}'.format(args.period))
         ModelFit(args.period, args.in_month, train_input_folder, balance=True)
 
+    elif args.train_predict:
+        assert args.period in months, "Select a valid month period"
+        print('Train model and predict on train/test month {}'.format(period))
+        ModelTrain(train_input_folder, args.period)
+        ModelPredict(args.period, args.in_month, train_input_folder, balance=True)
 
 main()
