@@ -36,16 +36,17 @@ class ModelTrain:
         if os.path.isfile('{}{}/train.tsv'.format(self.folder_path, self.period)):
             print('Read month {}'.format(self.period))
             self.X = pd.read_csv('{}{}/train.tsv'.format(self.folder_path, self.period))
+            self.y = self.X['target'].copy()
+            self.X.drop(['target', 'user_id'], axis=1, inplace=True)
+
+            # select features
+            features = import_features()
+            self.X = self.X[features]
         else:
             print('Error: train.tsv does not exist. Please run dataSplit.py on period {} first.')
             sys.exit()
 
-        self.y = self.X["target"].copy()
-        self.X.drop(['target', 'user_id'], axis=1, inplace=True)
 
-        # select features
-        features = import_features()
-        self.X = self.X[features]
 
     def import_model(self):
         print('importing model from file')
