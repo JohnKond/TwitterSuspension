@@ -70,13 +70,13 @@ class ModelTrain:
 
         ''' Scale data '''
         scaler = MinMaxScaler()
-        X_scaled = scaler.fit_transform(self.X.copy())
+        X_scaled = scaler.fit_transform(X.copy())
         
         ''' Store scaller '''
         save_scaler(scaler)
 
         ''' Train model with first month trained data '''
-        self.model.fit(X_scaled, self.y)
+        self.model.fit(X_scaled, y)
 
         ''' Save model '''
         save_model(self.model)
