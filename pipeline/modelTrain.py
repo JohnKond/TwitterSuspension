@@ -11,7 +11,7 @@ from SaveLoadUtils import load_params,save_model,load_model,save_scaler,load_sca
 from sklearn.preprocessing import MinMaxScaler
 
 #data_folder = 'C:/Users/giankond/Documents/thesis/Project/data/'
-from pipeline.featureSelectionUtils import import_features
+from featureSelectionUtils import import_features
 
 path = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + '/'
 
