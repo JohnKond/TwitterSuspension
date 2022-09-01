@@ -18,13 +18,13 @@ else:
     print('Error: Select a valid month period')
     sys.exit()
 
-'''
-users_filename = '/Storage/gkont/embeddings/{}/entity_{}_json/entity_names_user_0.json'.format(period,period)'
+
+users_filename = '/Storage/gkont/embeddings/{}/entity_{}_json/entity_names_user_0.json'.format(period,period)
 
 with open(users_filename) as f:
     names_set = ast.literal_eval(f.read())
 
-print('names feb_mar : ',len(names_set))
+print('names {} : {}'.format(period,len(names_set)))
 '''
 month_tsv = pd.read_csv(path + period + '/social_features_'+period+'.tsv',sep='\t',dtype={"user_id":"string"})
 
@@ -69,4 +69,4 @@ else:
 print('{} selected users df (len : {})'.format(period, new_df.shape))
 new_df.to_csv(selected_users_output,sep='\t')
 
-
+'''
