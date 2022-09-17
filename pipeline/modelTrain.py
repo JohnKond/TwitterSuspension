@@ -19,17 +19,6 @@ class ModelTrain:
     def __init__(self, train_folder, period):
         self.folder_path = train_folder
         self.period = period
-        # self.X = pd.concat([X_train, X_test])
-        # self.y = np.concatenate([y_train, y_test])
-        #self.X = pd.read_csv('{}{}/social_features_{}.tsv'.format(folder_path,period,period),sep='\t',dtype={"user_id":"string"})
-        #self.y = self.X['target'].copy()
-        #self.X.drop(['target','user_id'], axis=1, inplace=True)
-        '''
-        self.X_train = X_train
-        self.y_train = y_train
-        self.X_test = X_test
-        self.y_test = y_test
-        '''
         self.main()
 
     def read_month(self):
