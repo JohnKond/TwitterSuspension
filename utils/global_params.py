@@ -1,3 +1,7 @@
+'''
+Global_params.py contains all the
+'''
+
 import numpy as np
 
 K_folds = 5

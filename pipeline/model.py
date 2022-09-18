@@ -23,7 +23,7 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('--period', type=str, help='Specify period for a model procedure.')
 parser.add_argument('--model_selection', action='store_true', help='Performs model selectio, hyperparameters tuning and feature selection')
-parser.add_argument('--fit', action='store_true')
+parser.add_argument('--fit', action='store_true', help='Fit model with train data.')
 parser.add_argument('--train', action='store_true', help='Model train on specified period data')
 parser.add_argument('--predict', action='store_true', help='Model predict on specified period data')
 parser.add_argument('--in_month', action='store_true', help=' Used for train_predict procedure. If true, ')

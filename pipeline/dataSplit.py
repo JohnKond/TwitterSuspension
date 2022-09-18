@@ -14,13 +14,15 @@ from imblearn.under_sampling import RandomUnderSampler
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--period', type=str, choices=['feb_mar', 'feb_apr', 'feb_may', 'feb_jun'], help='Choose specific period dataset to split')
+parser.add_argument('--balance',action='store_true', help='Balance dataset')
 args = parser.parse_args()
 
 
 class DataSplit:
-    def __init__(self, period):
+    def __init__(self, period, balance):
         self.data_path = "/Storage/gkont/model_input/"
         self.period = period
+        self.balance = balance
         assert self.period in ['feb_mar', 'feb_apr', 'feb_may', 'feb_jun']
 
         self.main()
@@ -46,9 +48,9 @@ class DataSplit:
 
 
 
-    def split(self):
+    def split(self, df, Y):
         """ Split balanced dataset with stratified train-test split"""
-        X_train, X_test, y_train, y_test = train_test_split(df_bal, Y_bal, test_size=0.2, stratify=Y_bal)
+        X_train, X_test, y_train, y_test = train_test_split(df, Y, test_size=0.2, stratify=Y)
         self.store_files(X_train, X_test, y_train, y_test)
 
 
@@ -57,8 +59,8 @@ class DataSplit:
         X_train['target'] = y_train
         X_test['target'] = y_test
 
-        X_train.to_csv('/Storage/gkont/model_input/{}/train.tsv'.format(period), sep='\t')
-        X_test.to_csv('/Storage/gkont/model_input/{}/test.tsv'.format(period), sep='\t')
+        X_train.to_csv('/Storage/gkont/model_input/{}/train.tsv'.format(self.period), sep='\t')
+        X_test.to_csv('/Storage/gkont/model_input/{}/test.tsv'.format(self.period), sep='\t')
 
 
     def main(self):
@@ -67,7 +69,7 @@ class DataSplit:
         self.split()
 
 
-ds = DataSplit(args.period)
+ds = DataSplit(args.period, args.balance)
 
 
 

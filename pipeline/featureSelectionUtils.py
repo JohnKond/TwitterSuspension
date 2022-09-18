@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-import sys
-
 import pandas as pd
 import numpy as np
 import collections
@@ -111,15 +109,8 @@ def feature_selection(X_train, y_train, X_test, y_test):
 
     print('Feature selection.....Done')
 
-    # X_train and X_test after feature selection
     X_train = X_train[features]
     X_test = X_test[features]
-
-    # example dataset
-    # X_train = X_train.iloc[:100]
-    # y_train = y_train.iloc[:100]
-    # X_test = X_test.iloc[:99]
-    # y_test = y_test.iloc[:99]
 
     return X_train, y_train, X_test, y_test
 
