@@ -1,3 +1,11 @@
+"""
+-------------------------------
+Author : Giannis Kontogiorgakis
+Email : csd3964@csd.uoc.gr
+-------------------------------
+Main model file that manages the model selection, fit, train, predict.
+"""
+
 import os.path
 import sys
 import pandas as pd
@@ -39,7 +47,7 @@ class ModelPredict:
                 self.X_test, self.y_test = undersample.fit_resample(self.X_test, self.y_test)
 
 
-        # select features
+        ''' select features '''
         features = import_features()
         self.X_test = self.X_test[features]
         

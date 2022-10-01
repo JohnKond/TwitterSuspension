@@ -1,4 +1,12 @@
-#!/usr/bin/env python
+'''
+-------------------------------
+Author : Giannis Kontogiorgakis
+Email : csd3964@csd.uoc.gr
+-------------------------------
+This file contains all functions for feature selection step.
+'''
+
+
 import pandas as pd
 import numpy as np
 import collections
@@ -12,6 +20,7 @@ from sklearn.preprocessing import StandardScaler
 
 path = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + '/'
 
+""" Compute mean squared error for each alpha parameter. """
 def Lasso_finetuning(X_train, Y_train, X_test, Y_test, lasso_dict):
     alpha = np.arange(0.0001, 0.1, 0.001)
 
@@ -24,6 +33,7 @@ def Lasso_finetuning(X_train, Y_train, X_test, Y_test, lasso_dict):
     return lasso_dict
 
 
+""" Select best alpha parameter that minimises mean squared error across all folds. """
 def select_best_alpha(lasso_dict, number_of_folds):
     for alpha in lasso_dict:
         lasso_dict[alpha] /= number_of_folds
@@ -33,6 +43,7 @@ def select_best_alpha(lasso_dict, number_of_folds):
     return alpha
 
 
+""" Select non zero features (significant features)"""
 def significant_features(X_train, y_train, alpha):
     features = []
     lasso = Lasso(max_iter=10000, alpha=alpha)
@@ -44,7 +55,7 @@ def significant_features(X_train, y_train, alpha):
     return features
 
 
-# perform feature selection on train dataset
+""" Perform feature selection on train """
 def feature_selection_train(X_train, y_train):
     number_of_folds = 10
     kfold = StratifiedKFold(n_splits=number_of_folds, shuffle=True)
@@ -62,12 +73,13 @@ def feature_selection_train(X_train, y_train):
        
         lasso_dict = Lasso_finetuning(trainX, trainY, valX, valY, lasso_dict)
 
-    # find the best alpha param
+    """ Find the best alpha parameter """
     alpha = select_best_alpha(lasso_dict, number_of_folds)
 
     return significant_features(X_train, y_train, alpha=alpha)
 
 
+"""  If feature selection has been implemented, import feautures from file. """
 def import_features():
     if os.path.exists(path + 'FSfeatures/features.txt'):
         print('Importing features from file..')
@@ -87,24 +99,22 @@ def import_features():
 
 def feature_selection(X_train, y_train, X_test, y_test):
     print('Path : ', path)
-    # if feature selection is implemented import features
     if os.path.exists(path + 'FSfeatures/features.txt'):
         features = import_features()
     else:
 
         fs_start = time.time()
-        # returns most significant features
+        """ return most significant features """
         features = feature_selection_train(X_train, y_train)
         fs_end = time.time()
         print('Feature selection time: ', fs_end - fs_start, ' seconds')
 
-        # store features in file
+        """ store features in file """
         if not os.path.exists(path + 'FSfeatures'):
             os.mkdir(path + 'FSfeatures')
 
         with open(path + 'FSfeatures/features.txt', 'w+') as fp:
             for item in features[1:]:
-                # write each item on a new line
                 fp.write("%s\n" % item)
 
     print('Feature selection.....Done')

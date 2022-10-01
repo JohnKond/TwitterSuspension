@@ -28,7 +28,7 @@ class ModelTrain:
             self.y = self.X['target'].copy()
             self.X.drop(['target'], axis=1, inplace=True)
 
-            # select features
+            ''' select features '''
             features = import_features()
             self.X = self.X[features]
         else:

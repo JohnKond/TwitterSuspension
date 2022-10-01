@@ -1,3 +1,12 @@
+"""
+-------------------------------
+Author : Giannis Kontogiorgakis
+Email : csd3964@csd.uoc.gr
+-------------------------------
+modelFit.py manages the model fit on specified graph month, and .
+"""
+
+
 import os.path
 import sys
 
@@ -23,7 +32,6 @@ class ModelFit:
 
 
     def read_month(self):
-        #print('read previous users of {}'.format(self.period))
 
         if self.in_month:
             if os.path.isfile('{}{}/train.tsv'.format(self.folder_path, self.period)):
@@ -38,22 +46,18 @@ class ModelFit:
             self.y_train = self.X_train['target'].copy()
             self.X_train.drop(['target', 'user_id'], axis=1, inplace=True)
 
-
-        # select features
+        ''' select features '''
         features = import_features()
         self.X_train = self.X_train[features]
 
-
-
-        # balance dataset
+        ''' balance dataset '''
         if self.balance == True:
             undersample = RandomUnderSampler(sampling_strategy='majority')
             self.X_train, self.y_train = undersample.fit_resample(self.X_train, self.y_train)
 
-
     def fit_model(self, X, y):
 
-        # scale data
+        ''' scale data '''
         X_scaled = self.scaler.fit_transform(X.copy()) # transform or fit_transform
         self.model.fit(X_scaled, y)
         save_model(self.model)

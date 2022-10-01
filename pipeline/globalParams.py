@@ -1,3 +1,11 @@
+'''
+-------------------------------
+Author : Giannis Kontogiorgakis
+Email : csd3964@csd.uoc.gr
+-------------------------------
+globalParams.py : This file contains all four models parameters for finetuning.
+'''
+
 import numpy as np
 
 """Fine-tune parameters for Logistic-Regression model"""

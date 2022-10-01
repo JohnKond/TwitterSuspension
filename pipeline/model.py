@@ -1,10 +1,10 @@
-'''
+"""
 -------------------------------
 Author : Giannis Kontogiorgakis
 Email : csd3964@csd.uoc.gr
 -------------------------------
 Main model file that manages the model selection, fit, train, predict.
-'''
+"""
 import os
 import os.path
 import pandas as pd

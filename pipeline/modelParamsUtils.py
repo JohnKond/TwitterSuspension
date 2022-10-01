@@ -77,12 +77,7 @@ def XGB_parameter_list():
                                                         "learning_rate": learning_rate,
                                                         "objective" : objective
                                                         })
-    '''
-    params = '[{"n_estimators":"300","colsample_bytree":"0.65","max_depth":"6","gamma":"0","reg_alpha":"0","reg_lambda":"0.2", "subsample":"0.65","learning_rate":"0.005", "objective":"multi:softmax" },' \
-             '{"n_estimators":"300","colsample_bytree":"0.65","max_depth":"6","gamma":"0","reg_alpha":"0","reg_lambda":"0.2", "subsample":"0.6","learning_rate":"0.01", "objective":"multi:softprob" },' \
-             '{"n_estimators":"300","colsample_bytree":"0.65","max_depth":"6","gamma":"0","reg_alpha":"0","reg_lambda":"0.2", "subsample":"0.65","learning_rate":"0.005", "objective":"binary:logistic" }]'
-    '''
-    
+
     random.shuffle(params)
     config = random.sample(params,100)
     return config

@@ -1,3 +1,11 @@
+'''
+-------------------------------
+Author : Giannis Kontogiorgakis
+Email : csd3964@csd.uoc.gr
+-------------------------------
+This file contains a class with all functions for model selection step.
+'''
+
 import ast
 import json
 import time
