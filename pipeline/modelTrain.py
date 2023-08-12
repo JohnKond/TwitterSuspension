@@ -1,27 +1,41 @@
+'''
+-------------------------------
+Author : Giannis Kontogiorgakis
+Email : csd3964@csd.uoc.gr
+-------------------------------
+This file contains a class with all functions for the model training.
+'''
 import json
 import os
 import os.path
 import sys
-
 import pandas as pd
 import numpy as np
 import xgboost as xgb
 from sklearn.metrics import f1_score
 from SaveLoadUtils import load_params,save_model,load_model,save_scaler,load_scaler
 from sklearn.preprocessing import MinMaxScaler
-
-#data_folder = 'C:/Users/giankond/Documents/thesis/Project/data/'
 from featureSelectionUtils import import_features
 
 path = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + '/'
 
 class ModelTrain:
     def __init__(self, train_folder, period):
+        """
+        Initializes an instance of the ModelTrain class.
+
+        Args:
+            train_folder (str): Path to the folder containing training data.
+            period (str): The time period under consideration.
+        """
         self.folder_path = train_folder
         self.period = period
         self.main()
 
     def read_month(self):
+        """
+        Reads and prepares the training data for model training.
+        """
         if os.path.isfile('{}{}/train.tsv'.format(self.folder_path, self.period)):
             print('Read month {}'.format(self.period))
             self.X = pd.read_csv('{}{}/train.tsv'.format(self.folder_path, self.period), sep='\t', dtype={"user_id": "string"})
@@ -38,10 +52,20 @@ class ModelTrain:
 
 
     def import_model(self):
+        """
+        Imports the trained model for further training.
+        """
         print('importing model from file')
         self.model = load_model()
 
     def train_model(self, X, y):
+        """
+        Trains the model with the provided training data.
+
+        Args:
+            X (pd.DataFrame): Training input features.
+            y (pd.Series): Training target values.
+        """
         model_params = load_params('XGB')
 
         self.model = xgb.XGBClassifier(
@@ -74,6 +98,9 @@ class ModelTrain:
 
 
     def main(self):
+        """
+        The main execution function of the class.
+        """
         self.read_month()
         if os.path.isfile('model.pkl'):
             print('Model already exists')
