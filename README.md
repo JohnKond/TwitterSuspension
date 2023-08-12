@@ -51,6 +51,35 @@ in order to determine the most effective classification approach. Using the firs
 ## Evaluation
 
 - **1st Scenario :** We aimed to evaluate the model's adaptation to the initial month's data (February-March). To achieve this, we trained the model on the complete first-month graph dataset, using both the train and test sets.The model's initial performance was assessed by predicting user suspensions in subsequent one-month periods: March-April, April-May, and May-June.
+- **2nd Scenarion :** This scenario delved into the evolving nature of user embeddings over months, particularly during the significant surge in user numbers due to geopolitical events. To gauge improvement over time, the model was trained monthly with embeddings from the February-March dataset. The goal was to ascertain if the model's performance enhanced as it learned from the progressively evolving embeddings. Each month's user embeddings were trained on the February-March dataset, which held a larger user count due to the Russo-Ukraine war's peak.
+- **Third Scenario:** Our final scenario sought to measure the model's accuracy across all graph embedding datasets over the four-month period. To ensure fairness, we balanced datasets using random undersampling and split them into train and test sets (80/20 ratio). Following normalization with Min-Max scaler, we loaded the scaler for test set normalization. We aimed to comprehend how accuracy fluctuated across the dataset dimensions, accounting for each graph containing the previous ones.
 
 
+## Installation
 
+- Clone the repository :
+```git clone https://github.com/JohnKond/TwitterSuspension.git```
+
+- Install essential requirements, by navigating in project folder and run :
+```pip install -r requirements```
+
+- Export graphs from database, using pymongo
+```python graphUtils/export_graphs.py --period feb_mar ```
+    > run this task for each period (feb_mar, feb_apr, feb_may, feb_jun)
+
+- Graph Embeddings 
+After graph export, lets assume that your graph files are stored in this format in folder data: 
+
+```
+├── data
+│   ├── feb_mar
+│   │   ├── graph_mention_feb_mar.tsv
+│   │   ├── graph_quote_feb_mar.tsv
+│   │   ├── graph_multy_feb_mar.tsv
+│   ├── feb_apr
+│   │   ├── ...
+│   ├── feb_may
+│   │   ├── ...
+│   ├── feb_jun
+│   │   ├── ...
+```
