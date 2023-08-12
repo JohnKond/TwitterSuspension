@@ -1,8 +1,17 @@
+"""
+-------------------------------
+Author : Giannis Kontogiorgakis
+Email : csd3964@csd.uoc.gr
+-------------------------------
+modelParamsUtils.py is responsible for creating the parameters list for each model, for fine-tuning.
+"""
 import ast
 import random
 from globalParams import SVM_params, RF_params, XGB_params, NB_params, LR_params
 
-
+'''
+Create parameter list for Linear Regression model
+'''
 def LR_parameter_list():
     params = []
     for solver in LR_params['solver']:
@@ -15,6 +24,9 @@ def LR_parameter_list():
     return params
 
 
+'''
+Create parameter list for Naive Bayes model
+'''
 def NB_parameter_list():
     params = []
     for var in NB_params['var_smoothing']:
@@ -23,7 +35,9 @@ def NB_parameter_list():
     # config = random.sample(params, 100)
     return params
 
-
+'''
+Create parameter list for SVM model
+'''
 def SVM_parameter_list():
     params = []
     for c in SVM_params['C']:
@@ -34,7 +48,9 @@ def SVM_parameter_list():
     config = random.sample(params,100)    
     return config
 
-
+'''
+Create parameter list for Random Forest model
+'''
 def RF_parameter_list():
     params = []
     for n_estimators in RF_params['n_estimators']:
@@ -55,7 +71,9 @@ def RF_parameter_list():
     config = random.sample(params,100)    
     return config
 
-
+'''
+Create parameter list for XGBoost model
+'''
 def XGB_parameter_list():
     params = []
     for n_estimators in XGB_params['n_estimators']:
