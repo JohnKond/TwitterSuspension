@@ -3,7 +3,7 @@
 Author : Giannis Kontogiorgakis
 Email : csd3964@csd.uoc.gr
 -------------------------------
-Main model file that manages the model selection, fit, train, predict.
+Main model file that manages the model selection, fit, train and predict.
 """
 
 import os.path
@@ -15,16 +15,28 @@ from sklearn.metrics import f1_score
 from imblearn.under_sampling import RandomUnderSampler
 
 class ModelPredict:
-
+    
     def __init__(self, period,train_input_folder, in_month , balance):
+        """
+        Initializes an instance of the ModelPredict class.
+
+        Args:
+            period (str): The time period under consideration.
+            train_input_folder (str): Path to the folder containing training data.
+            in_month (bool): True if predicting for the same month as training, False otherwise.
+            balance (bool): True to balance the dataset before prediction.
+        """
         self.period = period
         self.in_month = in_month
         self.balance = balance
         self.folder_path = train_input_folder
         self.main()
 
-
+    
     def read_month(self):
+        """
+        Reads and prepares the data for prediction based on the specified month and parameters.
+        """
         print('reading {} month data'.format(self.period))
 
         if self.in_month:
@@ -54,6 +66,9 @@ class ModelPredict:
 
 
     def import_model(self):
+        """
+        Imports the trained model and scaler for prediction.
+        """
         if os.path.isfile('model.pkl'):
             self.model = load_model()
             self.scaler = load_scaler()
@@ -62,6 +77,14 @@ class ModelPredict:
             sys.exit()
         
     def predict(self, X, y):
+        """
+        Predicts user suspension scores using the loaded model and scaler.
+
+        Args:
+            X (pd.DataFrame): Input features for prediction.
+            y (pd.Series): Actual target values.
+
+        """
         X_scaled = self.scaler.transform(X)
         y_pred = self.model.predict(X_scaled)
         score = f1_score(y_pred, y)
@@ -69,6 +92,9 @@ class ModelPredict:
 
 
     def main(self):
+        """
+        The main execution function of the class.
+        """
         self.import_model()
         self.read_month()
         self.predict(self.X_test, self.y_test)
