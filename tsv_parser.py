@@ -1,3 +1,7 @@
+'''
+For personal use: tsv_parser.py converts graph embeddings to tsv files.
+'''
+
 import json
 import argparse
 import h5py
