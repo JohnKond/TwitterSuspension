@@ -13,18 +13,13 @@ from collections import defaultdict
 import sys
 import pickle
 import os.path
-#sys.path.append("/home/gkont/TwitterSuspension")
-
 import numpy as np
 import pandas as pd
-
-# import classifiers
 from sklearn import svm
 from sklearn.ensemble import RandomForestClassifier
 import xgboost as xgb
 from sklearn.naive_bayes import GaussianNB
 from sklearn.linear_model import LogisticRegression
-
 from sklearn.metrics import f1_score
 from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import StandardScaler
@@ -34,6 +29,15 @@ from SaveLoadUtils import save_params, save_scores
 
 class ModelSelection:
     def __init__(self, period, X_train, y_train, k_folds):
+        """
+        Initializes an instance of the ModelSelection class.
+
+        Args:
+            period (str): The time period under consideration.
+            X_train (pd.DataFrame): Training input features.
+            y_train (pd.Series): Training target values.
+            k_folds (int): Number of cross-validation folds.
+        """
         self.period = period
         self.X_train = X_train
         self.y_train = y_train
@@ -43,6 +47,16 @@ class ModelSelection:
         self.main()
 
     def model_classifier(self, name, entry):
+        """
+        Returns a classifier based on the provided name and entry.
+
+        Args:
+            name (str): Name of the classifier.
+            entry (dict): Configuration for the classifier.
+
+        Returns:
+            Classifier: The configured classifier instance.
+        """
         if name == 'SVM':
             clf = svm.SVC(
                           kernel=entry['kernel'],
@@ -117,6 +131,15 @@ class ModelSelection:
 
 
     def model_config(self, name):
+        """
+        Returns the configuration list for the specified classifier.
+
+        Args:
+            name (str): Name of the classifier.
+
+        Returns:
+            list: List of configuration entries.
+        """
         if name == 'SVM':
             return SVM_parameter_list()
         elif name == 'RF':
@@ -130,6 +153,15 @@ class ModelSelection:
 
 
     def model_train(self, name):
+        """
+        Trains models for the specified classifier.
+
+        Args:
+            name (str): Name of the classifier.
+
+        Returns:
+            dict: Performance scores for validation and training datasets.
+        """
         val_performance = defaultdict(lambda: 0.0)
         train_performance = defaultdict(lambda: 0.0)
         config = self.model_config(name)
@@ -151,10 +183,10 @@ class ModelSelection:
 
                 print(' - Testing setup {} : {} (fold {})'.format(setup_index,entry,fold_index))
 
-                # select classifier
+                '''select classifier'''
                 clf = self.model_classifier(name, entry)
 
-                # Train the model using the training sets
+                '''Train the model using the training sets'''
                 clf.fit(train_X, train_Y)
 
 
@@ -165,15 +197,15 @@ class ModelSelection:
                     val_Y_pred = np.argmax(val_Y_pred, axis=1)
                     train_Y_pred = np.argmax(train_Y_pred, axis=1)
                 else:
-                    # Predict the response for test dataset
+                    '''Predict the response for test dataset'''
                     val_Y_pred = clf.predict(val_X)
                     train_Y_pred = clf.predict(train_X)
 
-                # Score
+                '''Score'''
                 f1_val = f1_score(val_Y, val_Y_pred)
                 f1_train = f1_score(train_Y, train_Y_pred)
 
-                # store score
+                '''store score'''
                 val_performance[str(entry)] += f1_val
                 train_performance[str(entry)] += f1_train
                 setup_index = setup_index + 1
@@ -183,6 +215,12 @@ class ModelSelection:
 
 
     def finetune(self, name):
+        """
+        Fine-tunes the specified classifier and prints the results.
+
+        Args:
+            name (str): Name of the classifier.
+        """
         print(name+' finetuning')
         print('----------------------\n')
 
@@ -192,7 +230,7 @@ class ModelSelection:
         end_train = time.time()
         training_time = end_train - start_train
 
-        # calculate performance
+        '''calculate performance'''
         best_params = self.best_performance(performance_val_dict)
         best_val_score = performance_val_dict[best_params]/self.k_folds
         best_train_score = performance_train_dict[best_params]/self.k_folds
@@ -212,16 +250,21 @@ class ModelSelection:
         return best_param_set
 
     def models_finetuning(self):
+        """
+        Initiates the fine-tuning process for all classifiers.
+        """
         print('Choosing model to finetune')
-        # self.finetune('LR')
-        # self.finetune('NB')
-        # self.finetune('RF')
-        # self.finetune('SVM')
-        # self.finetune('XGB')
+        self.finetune('LR')
+        self.finetune('NB')
+        self.finetune('RF')
+        self.finetune('SVM')
+        self.finetune('XGB')
 
     def create_folds(self):
-
-        # check if folds indexes exists
+        """
+        Creates cross-validation folds and stores their indexes.
+        """
+        ''' check if folds indexes exists '''
         if os.path.exists('fold_indexes.pkl'):
             print('Importing folds from file..')
             with open('fold_indexes.pkl', "rb") as output:
@@ -234,7 +277,7 @@ class ModelSelection:
             self.folds_dict['fold_'+str(i)] = [train_index, val_index]
             i = i+1
 
-        # store folds indexes in file
+        '''store folds indexes in file'''
         with open('fold_indexes.pkl', "wb") as output:
             pickle.dump(self.folds_dict, output)
 
@@ -242,6 +285,9 @@ class ModelSelection:
 
 
     def main(self):
+        """
+        The main execution function of the class.
+        """
         self.create_folds()
         self.models_finetuning()
         print('Model selection done')
