@@ -87,10 +87,10 @@ for month in months_to_exclude:
     print('excluding all entries from month ',month)
     
 if select_previous_users == False:
-    # select users that dont exist on previous month
+    '''select users that dont exist on previous month'''
     new_df = month_tsv[~month_tsv['user_id'].isin(names_set)]
 else:
-    # select users that exist on previous month
+    '''select users that exist on previous month'''
     new_df = month_tsv[month_tsv['user_id'].isin(names_set)]
         
 
