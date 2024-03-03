@@ -50,6 +50,7 @@ in order to determine the most effective classification approach. Using the firs
 - **2nd Scenario :** This scenario delved into the evolving nature of user embeddings over months, particularly during the significant surge in user numbers due to geopolitical events. To gauge improvement over time, the model was trained monthly with embeddings from the February-March dataset. The goal was to ascertain if the model's performance enhanced as it learned from the progressively evolving embeddings. Each month's user embeddings were trained on the February-March dataset, which held a larger user count due to the Russo-Ukraine war's peak.
 - **Third Scenario :** Our final scenario sought to measure the model's accuracy across all graph embedding datasets over the four-month period. To ensure fairness, we balanced datasets using random undersampling and split them into train and test sets (80/20 ratio). Following normalization with Min-Max scaler, we loaded the scaler for test set normalization. We aimed to comprehend how accuracy fluctuated across the dataset dimensions, accounting for each graph containing the previous ones.
 
+For more information, see project report.
 <!--
 ## Installation
 
